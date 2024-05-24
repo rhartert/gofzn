@@ -1,0 +1,2 @@
+# gofzn
+Go FlatZinc parser        
