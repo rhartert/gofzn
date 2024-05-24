@@ -1,2 +1,3 @@
-# gofzn
-Go FlatZinc parser        
+# Go FlatZinc
+
+🏗️ Work in progress...
