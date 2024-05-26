@@ -38,7 +38,7 @@ func TestParserInstruction_parseAnnotations(t *testing.T) {
 		},
 		{
 			tokens: []tok.Token{},
-			want:   []Annotation{},
+			want:   nil,
 		},
 		{
 			tokens: []tok.Token{
