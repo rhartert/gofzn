@@ -80,6 +80,12 @@ func (p *parser) parse() error {
 			return err
 		}
 		return p.handler.AddPredicate(pred)
+	case isConstraint(p):
+		c, err := parseConstraint(p)
+		if err != nil {
+			return err
+		}
+		return p.handler.AddConstraint(c)
 	case isSolveGoal(p):
 		s, err := parseSolveGoal(p)
 		if err != nil {

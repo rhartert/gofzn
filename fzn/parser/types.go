@@ -7,8 +7,16 @@ type Predicate struct {
 type Parameter struct{}
 
 type Variable struct{}
+type Constraint struct {
+	Identifier  string
+	Expressions []Expr
+	Annotations []Annotation
+}
 
-type Constraint struct{}
+type Expr struct {
+	IsArray bool
+	Exprs   []BasicExpr
+}
 
 type SolveMethod int
 

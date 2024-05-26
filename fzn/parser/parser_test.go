@@ -81,6 +81,142 @@ func TestParseInstruction_comment(t *testing.T) {
 	})
 }
 
+func TestParseInstruction_constraint(t *testing.T) {
+	testParseInstruction(t, []testCase{
+		{
+			desc: "missing constraint keyword",
+			tokens: []tok.Token{
+				{Type: tok.Identifier, Value: "foobar"},
+				{Type: tok.TupleStart},
+				{Type: tok.Identifier, Value: "X_VAR"},
+				{Type: tok.TupleEnd},
+				{Type: tok.EOI},
+			},
+			wantErr: true,
+		},
+		{
+			desc: "missing constraint identifier",
+			tokens: []tok.Token{
+				{Type: tok.Constraint},
+				{Type: tok.TupleStart},
+				{Type: tok.Identifier, Value: "X_VAR"},
+				{Type: tok.TupleEnd},
+				{Type: tok.EOI},
+			},
+			wantErr: true,
+		},
+		{
+			desc: "missing parameters",
+			tokens: []tok.Token{
+				{Type: tok.Constraint},
+				{Type: tok.Identifier, Value: "foobar"},
+				{Type: tok.EOI},
+			},
+			wantErr: true,
+		},
+		{
+			desc: "missing end of instruction",
+			tokens: []tok.Token{
+				{Type: tok.Constraint},
+				{Type: tok.Identifier, Value: "foobar"},
+				{Type: tok.TupleStart},
+				{Type: tok.TupleEnd},
+			},
+			wantErr: true,
+		},
+		{
+			desc: "valid constraint (no parameter)",
+			tokens: []tok.Token{
+				{Type: tok.Constraint},
+				{Type: tok.Identifier, Value: "foobar"},
+				{Type: tok.TupleStart},
+				{Type: tok.TupleEnd},
+				{Type: tok.EOI},
+			},
+			want: instruction{
+				Constraint: &Constraint{
+					Identifier:  "foobar",
+					Expressions: []Expr{},
+				},
+			},
+		},
+		{
+			desc: "valid constraint (one parameter)",
+			tokens: []tok.Token{
+				{Type: tok.Constraint},
+				{Type: tok.Identifier, Value: "foobar"},
+				{Type: tok.TupleStart},
+				{Type: tok.Identifier, Value: "X_VAR"},
+				{Type: tok.TupleEnd},
+				{Type: tok.EOI},
+			},
+			want: instruction{
+				Constraint: &Constraint{
+					Identifier: "foobar",
+					Expressions: []Expr{
+						{Exprs: []BasicExpr{{Identifier: "X_VAR"}}},
+					},
+				},
+			},
+		},
+		{
+			desc: "valid constraint (two parameter with annotation)",
+			tokens: []tok.Token{
+				{Type: tok.Constraint},
+				{Type: tok.Identifier, Value: "foobar"},
+				{Type: tok.TupleStart},
+				{Type: tok.Identifier, Value: "X_VAR"},
+				{Type: tok.Comma},
+				{Type: tok.Identifier, Value: "Y_VAR"},
+				{Type: tok.TupleEnd},
+				{Type: tok.AnnStart},
+				{Type: tok.Identifier, Value: "annotation"},
+				{Type: tok.EOI},
+			},
+			want: instruction{
+				Constraint: &Constraint{
+					Identifier: "foobar",
+					Expressions: []Expr{
+						{Exprs: []BasicExpr{{Identifier: "X_VAR"}}},
+						{Exprs: []BasicExpr{{Identifier: "Y_VAR"}}},
+					},
+					Annotations: []Annotation{{Identifier: "annotation"}},
+				},
+			},
+		},
+		{
+			desc: "valid constraint (array of parameters)",
+			tokens: []tok.Token{
+				{Type: tok.Constraint},
+				{Type: tok.Identifier, Value: "foobar"},
+				{Type: tok.TupleStart},
+				{Type: tok.ArrayStart},
+				{Type: tok.Identifier, Value: "X_VAR"},
+				{Type: tok.Comma},
+				{Type: tok.Identifier, Value: "Y_VAR"},
+				{Type: tok.ArrayEnd},
+				{Type: tok.TupleEnd},
+				{Type: tok.AnnStart},
+				{Type: tok.Identifier, Value: "annotation"},
+				{Type: tok.EOI},
+			},
+			want: instruction{
+				Constraint: &Constraint{
+					Identifier: "foobar",
+					Expressions: []Expr{{
+						IsArray: true,
+						Exprs: []BasicExpr{
+							{Identifier: "X_VAR"},
+							{Identifier: "Y_VAR"},
+						},
+					}},
+					Annotations: []Annotation{{Identifier: "annotation"}},
+				},
+			},
+		},
+	})
+}
+
 func TestParseInstruction_solveGoal(t *testing.T) {
 	testParseInstruction(t, []testCase{
 		{
