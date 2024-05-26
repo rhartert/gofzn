@@ -44,6 +44,10 @@ func Parse(reader io.Reader, handler parser.Handler) error {
 		}
 	}
 
+	if err := scanner.Err(); err != nil {
+		return fmt.Errorf("error reading FlatZinc model: %w", err)
+	}
+
 	return nil
 }
 
