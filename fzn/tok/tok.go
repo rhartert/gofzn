@@ -1,6 +1,6 @@
-// Package tokenizer provides the Tokenizer struct to parse strings into
-// sequences of FlatZinc lexical tokens.
-package tokenizer
+// Package tok provides the Tokenizer struct to parse strings into sequences
+// of FlatZinc lexical tokens.
+package tok
 
 import (
 	"fmt"

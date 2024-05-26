@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"strings"
 
-	tok "github.com/rhartert/gofzn/fzn/tokenizer"
+	"github.com/rhartert/gofzn/fzn/tok"
 )
 
 func isPredicate(p *parser) bool {

@@ -1,4 +1,4 @@
-package tokenizer
+package tok
 
 import (
 	"testing"

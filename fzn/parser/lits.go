@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"strconv"
 
-	tok "github.com/rhartert/gofzn/fzn/tokenizer"
+	"github.com/rhartert/gofzn/fzn/tok"
 )
 
 // Parsers for terminal literals

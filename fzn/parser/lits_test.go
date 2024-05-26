@@ -3,7 +3,7 @@ package parser
 import (
 	"testing"
 
-	tok "github.com/rhartert/gofzn/fzn/tokenizer"
+	"github.com/rhartert/gofzn/fzn/tok"
 )
 
 func TestParserInstruction_parseBoolLit(t *testing.T) {

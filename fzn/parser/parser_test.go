@@ -4,7 +4,7 @@ import (
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
-	tok "github.com/rhartert/gofzn/fzn/tokenizer"
+	"github.com/rhartert/gofzn/fzn/tok"
 	"github.com/rhartert/ptr"
 )
 

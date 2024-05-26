@@ -3,7 +3,7 @@ package parser
 import (
 	"fmt"
 
-	tok "github.com/rhartert/gofzn/fzn/tokenizer"
+	"github.com/rhartert/gofzn/fzn/tok"
 )
 
 func isComment(p *parser) bool {

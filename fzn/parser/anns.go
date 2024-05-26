@@ -3,7 +3,7 @@ package parser
 import (
 	"fmt"
 
-	tok "github.com/rhartert/gofzn/fzn/tokenizer"
+	"github.com/rhartert/gofzn/fzn/tok"
 )
 
 // parseAnnotations parses a sequence of annotations. It returns nil if the

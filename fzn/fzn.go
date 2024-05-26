@@ -7,7 +7,7 @@ import (
 	"io"
 
 	"github.com/rhartert/gofzn/fzn/parser"
-	"github.com/rhartert/gofzn/fzn/tokenizer"
+	"github.com/rhartert/gofzn/fzn/tok"
 )
 
 // Model represents a FlatZinc model.
@@ -28,14 +28,14 @@ type Model struct {
 // entities have been declared. It is the Handler's responsibility to perform
 // these verifications.
 func Parse(reader io.Reader, handler parser.Handler) error {
-	tok := tokenizer.Tokenizer{}
+	tokenizer := tok.Tokenizer{}
 	scanner := bufio.NewScanner(reader)
 
 	i := 0 // line number
 	for scanner.Scan() {
 		i++
 		line := scanner.Text()
-		tokens, err := tok.Tokenize(line)
+		tokens, err := tokenizer.Tokenize(line)
 		if err != nil {
 			return fmt.Errorf("tokenizer error at line %d: %w", i, err)
 		}
