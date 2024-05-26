@@ -72,12 +72,20 @@ func parseFloatLit(p *parser) (float64, error) {
 	return f, nil
 }
 
+func isStringLit(p *parser) bool {
+	return p.lookAhead(0).Type == tok.StringLit
+}
+
 func parseStringLit(p *parser) (string, error) {
 	t := p.next()
 	if t.Type != tok.StringLit {
 		return "", fmt.Errorf("not a string token %s", t)
 	}
 	return t.Value, nil
+}
+
+func isIdentifier(p *parser) bool {
+	return p.lookAhead(0).Type == tok.Identifier
 }
 
 func parseIdentifier(p *parser) (string, error) {

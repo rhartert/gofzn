@@ -18,12 +18,6 @@ type Handler interface {
 	AddSolveGoal(s *SolveGoal) error
 }
 
-type Predicate struct{}
-type Parameter struct{}
-type Variable struct{}
-type Constraint struct{}
-type SolveGoal struct{}
-
 // ParseInstruction parses a sequence of tokens representing a FlatZinc
 // instruction and uses the provided Handler to manage the parsed elements.
 // It returns an error if the parsing fails or if the Handler reports an error.
@@ -49,6 +43,27 @@ func (p *parser) next() tok.Token {
 	}
 	p.pos++
 	return p.tokens[p.pos-1]
+}
+
+// nextIf returns true and consumes the next token iff it is of type tt.
+func (p *parser) nextIf(tt tok.Type) bool {
+	if p.pos >= len(p.tokens) {
+		return tt == tok.EOF
+	}
+	if p.tokens[p.pos].Type == tt {
+		p.pos++
+		return true
+	}
+	return false
+}
+
+// lookAhead returns the token at n positions from the current position without
+// impacting the result of p.next.
+func (p *parser) lookAhead(n int) tok.Token {
+	if i := p.pos + n; i < len(p.tokens) {
+		return p.tokens[i]
+	}
+	return tok.Token{Type: tok.EOF}
 }
 
 // parse analyzes the tokens and delegates handling of parsed elements to the
