@@ -70,5 +70,14 @@ func (p *parser) lookAhead(n int) tok.Token {
 // appropriate Handler method. It returns an error if parsing fails or if the
 // Handler reports an error.
 func (p *parser) parse() error {
-	return fmt.Errorf("not implemented")
+	switch {
+	case isSolveGoal(p):
+		s, err := parseSolveGoal(p)
+		if err != nil {
+			return err
+		}
+		return p.handler.AddSolveGoal(s)
+	default:
+		return fmt.Errorf("not a recognized instruction")
+	}
 }

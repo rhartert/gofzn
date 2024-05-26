@@ -4,7 +4,20 @@ type Predicate struct{}
 type Parameter struct{}
 type Variable struct{}
 type Constraint struct{}
-type SolveGoal struct{}
+
+type SolveMethod int
+
+const (
+	SolveMethodSatisfy SolveMethod = iota
+	SolveMethodMinimize
+	SolveMethodMaximize
+)
+
+type SolveGoal struct {
+	SolveMethod SolveMethod
+	Objective   BasicExpr
+	Annotations []Annotation
+}
 
 type Annotation struct {
 	Identifier string

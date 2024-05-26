@@ -6,8 +6,10 @@ import (
 	tok "github.com/rhartert/gofzn/fzn/tokenizer"
 )
 
+// parseAnnotations parses a sequence of annotations. It returns nil if the
+// sequence is empty.
 func parseAnnotations(p *parser) ([]Annotation, error) {
-	annotations := []Annotation{}
+	var annotations []Annotation
 	for p.nextIf(tok.AnnStart) {
 		a, err := parseAnnotation(p)
 		if err != nil {
