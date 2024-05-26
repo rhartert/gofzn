@@ -114,3 +114,8 @@ type RangeInt struct {
 type RangeFloat struct {
 	Min, Max float64
 }
+
+type Array struct {
+	Start int
+	End   int
+}

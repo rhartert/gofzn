@@ -6,11 +6,6 @@ import (
 	"github.com/rhartert/gofzn/fzn/tok"
 )
 
-type Array struct {
-	Start int
-	End   int
-}
-
 func parseArrayOf(p *parser) (*Array, error) {
 	if p.next().Type != tok.Array {
 		return nil, fmt.Errorf("should start with array")
