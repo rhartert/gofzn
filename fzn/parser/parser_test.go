@@ -189,7 +189,7 @@ func TestParseInstruction_parameter(t *testing.T) {
 			want: instruction{
 				Parameter: &Parameter{
 					Identifier: "foo",
-					ParType:    ParTypeInt,
+					Type:       ParTypeInt,
 					Exprs:      []BasicLitExpr{{Int: ptr.Of(42)}},
 				},
 			},
@@ -207,7 +207,7 @@ func TestParseInstruction_parameter(t *testing.T) {
 			want: instruction{
 				Parameter: &Parameter{
 					Identifier: "foo",
-					ParType:    ParTypeBool,
+					Type:       ParTypeBool,
 					Exprs:      []BasicLitExpr{{Bool: ptr.Of(true)}},
 				},
 			},
@@ -225,7 +225,7 @@ func TestParseInstruction_parameter(t *testing.T) {
 			want: instruction{
 				Parameter: &Parameter{
 					Identifier: "foo",
-					ParType:    ParTypeFloat,
+					Type:       ParTypeFloat,
 					Exprs:      []BasicLitExpr{{Float: ptr.Of(42.0)}},
 				},
 			},
@@ -251,7 +251,7 @@ func TestParseInstruction_parameter(t *testing.T) {
 			want: instruction{
 				Parameter: &Parameter{
 					Identifier: "foo",
-					ParType:    ParTypeSetOfInt,
+					Type:       ParTypeSetOfInt,
 					Exprs: []BasicLitExpr{{Set: &SetLit{
 						SetInt: &SetIntLit{
 							Values: [][]int{{42, 42}, {44, 45}},
@@ -285,11 +285,266 @@ func TestParseInstruction_parameter(t *testing.T) {
 			want: instruction{
 				Parameter: &Parameter{
 					Identifier: "foo",
-					ParType:    ParTypeInt,
+					Type:       ParTypeInt,
 					Array:      &Array{1, 2},
 					Exprs: []BasicLitExpr{
 						{Int: ptr.Of(42)},
 						{Int: ptr.Of(1337)},
+					},
+				},
+			},
+		},
+	})
+}
+
+func TestParseInstruction_variable(t *testing.T) {
+	testParseInstruction(t, []testCase{
+		{
+			desc: "missign var keyword",
+			tokens: []tok.Token{
+				{Type: tok.IntType},
+				{Type: tok.Colon},
+				{Type: tok.Identifier, Value: "X"},
+				{Type: tok.EOI},
+			},
+			wantErr: true,
+		},
+		{
+			desc: "missing type",
+			tokens: []tok.Token{
+				{Type: tok.Var},
+				{Type: tok.Colon},
+				{Type: tok.Identifier, Value: "X"},
+				{Type: tok.EOI},
+			},
+			wantErr: true,
+		},
+		{
+			desc: "missign colon",
+			tokens: []tok.Token{
+				{Type: tok.Var},
+				{Type: tok.IntType},
+				{Type: tok.Identifier, Value: "X"},
+				{Type: tok.EOI},
+			},
+			wantErr: true,
+		},
+		{
+			desc: "missing identifier",
+			tokens: []tok.Token{
+				{Type: tok.Var},
+				{Type: tok.IntType},
+				{Type: tok.Colon},
+				{Type: tok.EOI},
+			},
+			wantErr: true,
+		},
+		{
+			desc: "missing end of instruction",
+			tokens: []tok.Token{
+				{Type: tok.Var},
+				{Type: tok.IntType},
+				{Type: tok.Colon},
+				{Type: tok.Identifier, Value: "X"},
+			},
+			wantErr: true,
+		},
+		{
+			desc: "valid int variable (no domain)",
+			tokens: []tok.Token{
+				{Type: tok.Var},
+				{Type: tok.IntType},
+				{Type: tok.Colon},
+				{Type: tok.Identifier, Value: "X"},
+				{Type: tok.EOI},
+			},
+			want: instruction{
+				Variable: &Variable{
+					Identifier: "X",
+					Type:       VarTypeIntRange,
+					Domain:     VarDomain{},
+				},
+			},
+		},
+		{
+			desc: "valid int variable (with annotation)",
+			tokens: []tok.Token{
+				{Type: tok.Var},
+				{Type: tok.IntType},
+				{Type: tok.Colon},
+				{Type: tok.Identifier, Value: "X"},
+				{Type: tok.AnnStart},
+				{Type: tok.Identifier, Value: "foo"},
+				{Type: tok.EOI},
+			},
+			want: instruction{
+				Variable: &Variable{
+					Identifier:  "X",
+					Type:        VarTypeIntRange,
+					Domain:      VarDomain{},
+					Annotations: []Annotation{{Identifier: "foo"}},
+				},
+			},
+		},
+		{
+			desc: "valid int variable (range)",
+			tokens: []tok.Token{
+				{Type: tok.Var},
+				{Type: tok.IntLit, Value: "1"},
+				{Type: tok.Range},
+				{Type: tok.IntLit, Value: "5"},
+				{Type: tok.Colon},
+				{Type: tok.Identifier, Value: "X"},
+				{Type: tok.EOI},
+			},
+			want: instruction{
+				Variable: &Variable{
+					Identifier: "X",
+					Type:       VarTypeIntRange,
+					Domain:     VarDomain{IntDomain: &SetIntLit{Values: [][]int{{1, 5}}}},
+				},
+			},
+		},
+		{
+			desc: "valid float variable (range)",
+			tokens: []tok.Token{
+				{Type: tok.Var},
+				{Type: tok.FloatLit, Value: "0.1"},
+				{Type: tok.Range},
+				{Type: tok.FloatLit, Value: "0.5"},
+				{Type: tok.Colon},
+				{Type: tok.Identifier, Value: "X"},
+				{Type: tok.EOI},
+			},
+			want: instruction{
+				Variable: &Variable{
+					Identifier: "X",
+					Type:       VarTypeFloatRange,
+					Domain:     VarDomain{FloatDomain: &SetFloatLit{Values: [][]float64{{0.1, 0.5}}}},
+				},
+			},
+		},
+		{
+			desc: "valid int var (set)",
+			tokens: []tok.Token{
+				{Type: tok.Var},
+				{Type: tok.SetStart},
+				{Type: tok.IntLit, Value: "1"},
+				{Type: tok.Comma},
+				{Type: tok.IntLit, Value: "3"},
+				{Type: tok.SetEnd},
+				{Type: tok.Colon},
+				{Type: tok.Identifier, Value: "X"},
+				{Type: tok.EOI},
+			},
+			want: instruction{
+				Variable: &Variable{
+					Identifier: "X",
+					Type:       VarTypeIntSet,
+					Domain:     VarDomain{IntDomain: &SetIntLit{Values: [][]int{{1, 1}, {3, 3}}}},
+				},
+			},
+		},
+		{
+			desc: "valid set of int var (range)",
+			tokens: []tok.Token{
+				{Type: tok.Var},
+				{Type: tok.Set},
+				{Type: tok.Of},
+				{Type: tok.IntLit, Value: "1"},
+				{Type: tok.Range},
+				{Type: tok.IntLit, Value: "3"},
+				{Type: tok.Colon},
+				{Type: tok.Identifier, Value: "X"},
+				{Type: tok.EOI},
+			},
+			want: instruction{
+				Variable: &Variable{
+					Identifier: "X",
+					Type:       VarTypeIntSet,
+					Domain:     VarDomain{IntDomain: &SetIntLit{Values: [][]int{{1, 3}}}},
+				},
+			},
+		},
+		{
+			desc: "valid set of int var (set)",
+			tokens: []tok.Token{
+				{Type: tok.Var},
+				{Type: tok.Set},
+				{Type: tok.Of},
+				{Type: tok.SetStart},
+				{Type: tok.IntLit, Value: "1"},
+				{Type: tok.Comma},
+				{Type: tok.IntLit, Value: "3"},
+				{Type: tok.SetEnd},
+				{Type: tok.Colon},
+				{Type: tok.Identifier, Value: "X"},
+				{Type: tok.EOI},
+			},
+			want: instruction{
+				Variable: &Variable{
+					Identifier: "X",
+					Type:       VarTypeIntSet,
+					Domain:     VarDomain{IntDomain: &SetIntLit{Values: [][]int{{1, 1}, {3, 3}}}},
+				},
+			},
+		},
+		{
+			desc: "valid array of int var",
+			tokens: []tok.Token{
+				{Type: tok.Array},
+				{Type: tok.ArrayStart},
+				{Type: tok.IntLit, Value: "1"},
+				{Type: tok.Range},
+				{Type: tok.IntLit, Value: "2"},
+				{Type: tok.ArrayEnd},
+				{Type: tok.Of},
+				{Type: tok.Var},
+				{Type: tok.IntType},
+				{Type: tok.Colon},
+				{Type: tok.Identifier, Value: "X"},
+				{Type: tok.EOI},
+			},
+			want: instruction{
+				Variable: &Variable{
+					Identifier: "X",
+					Type:       VarTypeIntRange,
+					Array:      &Array{1, 2},
+					Domain:     VarDomain{},
+				},
+			},
+		},
+		{
+			desc: "valid array of int var (with assign)",
+			tokens: []tok.Token{
+				{Type: tok.Array},
+				{Type: tok.ArrayStart},
+				{Type: tok.IntLit, Value: "1"},
+				{Type: tok.Range},
+				{Type: tok.IntLit, Value: "2"},
+				{Type: tok.ArrayEnd},
+				{Type: tok.Of},
+				{Type: tok.Var},
+				{Type: tok.IntType},
+				{Type: tok.Colon},
+				{Type: tok.Identifier, Value: "X"},
+				{Type: tok.Assign},
+				{Type: tok.ArrayStart},
+				{Type: tok.Identifier, Value: "foo"},
+				{Type: tok.Comma},
+				{Type: tok.Identifier, Value: "bar"},
+				{Type: tok.ArrayEnd},
+				{Type: tok.EOI},
+			},
+			want: instruction{
+				Variable: &Variable{
+					Identifier: "X",
+					Type:       VarTypeIntRange,
+					Array:      &Array{1, 2},
+					Domain:     VarDomain{},
+					Exprs: []BasicExpr{
+						{Identifier: "foo"},
+						{Identifier: "bar"},
 					},
 				},
 			},

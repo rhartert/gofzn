@@ -46,7 +46,7 @@ func parseParameter(p *parser) (param *Parameter, err error) {
 		}
 	}
 
-	param.ParType, err = parseParType(p)
+	param.Type, err = parseParType(p)
 	if err != nil {
 		return nil, fmt.Errorf("error parsing parameter type: %w", err)
 	}

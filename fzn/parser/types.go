@@ -6,7 +6,7 @@ type Predicate struct {
 
 type Parameter struct {
 	Identifier string
-	ParType    ParType
+	Type       ParType
 	Array      *Array
 	Exprs      []BasicLitExpr
 }
@@ -21,7 +21,30 @@ const (
 	ParTypeSetOfInt
 )
 
-type Variable struct{}
+type Variable struct {
+	Identifier  string
+	Type        VarType
+	Domain      VarDomain
+	Array       *Array
+	Annotations []Annotation
+	Exprs       []BasicExpr
+}
+
+type VarType int
+
+const (
+	VarTypeUnknown VarType = iota
+	VarTypeIntRange
+	VarTypeIntSet
+	VarTypeFloatRange
+	VarTypeBool
+)
+
+type VarDomain struct {
+	IntDomain   *SetIntLit
+	FloatDomain *SetFloatLit
+}
+
 type Constraint struct {
 	Identifier  string
 	Expressions []Expr

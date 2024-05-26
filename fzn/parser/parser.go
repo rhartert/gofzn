@@ -86,6 +86,12 @@ func (p *parser) parse() error {
 			return err
 		}
 		return p.handler.AddParameter(param)
+	case isVariable(p):
+		v, err := parseVariable(p)
+		if err != nil {
+			return err
+		}
+		return p.handler.AddVariable(v)
 	case isConstraint(p):
 		c, err := parseConstraint(p)
 		if err != nil {
