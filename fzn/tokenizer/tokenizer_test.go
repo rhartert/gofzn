@@ -156,13 +156,15 @@ var testCases = []testCase{
 	{"{0}", []Token{{SetStart, "{"}, {IntLit, "0"}, {SetEnd, "}"}}, false},
 	{"{1, 2}", []Token{{SetStart, "{"}, {IntLit, "1"}, {Comma, ","}, {IntLit, "2"}, {SetEnd, "}"}}, false},
 
-	// Sample instructions.
+	// Comment.
 	{
 		input: "%% comment line; var :: solve : %&_@!",
 		want:  []Token{{Comment, "%% comment line; var :: solve : %&_@!"}},
 	},
+
+	// Sample instructions.
 	{
-		input: "var bool: X_VAR_ ::foo :: bar = Y_VAR_;",
+		input: "  var  bool: X_VAR_::foo :: bar = Y_VAR_;",
 		want: []Token{
 			{Var, "var"},
 			{BoolType, "bool"},
@@ -181,24 +183,25 @@ var testCases = []testCase{
 
 func TestTokenizer_Tokenize(t *testing.T) {
 	for _, tc := range testCases {
+		t.Run(tc.input, func(t *testing.T) {
+			tok := Tokenizer{}
+			got, gotErr := tok.Tokenize(tc.input)
 
-		tok := Tokenizer{}
-		got, gotErr := tok.Tokenize(tc.input)
+			if tc.wantErr && gotErr == nil {
+				t.Errorf("Tokenize(%q): want error, got nil", tc.input)
+			}
+			if !tc.wantErr && gotErr != nil {
+				t.Errorf("Tokenize(%q): want no error, got %s", tc.input, gotErr)
+			}
 
-		if tc.wantErr && gotErr == nil {
-			t.Errorf("Tokenize(%q): want error, got nil", tc.input)
-		}
-		if !tc.wantErr && gotErr != nil {
-			t.Errorf("Tokenize(%q): want no error, got %s", tc.input, gotErr)
-		}
-
-		want := tc.want
-		if !tc.wantErr {
-			want = append(want, Token{EOF, ""})
-		}
-		if diff := cmp.Diff(want, got); diff != "" {
-			t.Errorf("Tokenize(%q): mismatch (-want +got):\n%s", tc.input, diff)
-		}
+			want := tc.want
+			if !tc.wantErr {
+				want = append(want, Token{EOF, ""})
+			}
+			if diff := cmp.Diff(want, got); diff != "" {
+				t.Errorf("Tokenize(%q): mismatch (-want +got):\n%s", tc.input, diff)
+			}
+		})
 	}
 }
 
@@ -226,9 +229,7 @@ func TestToken_String(t *testing.T) {
 	}
 
 	for _, tc := range testCases {
-		got := tc.token.String()
-
-		if got != tc.want {
+		if got := tc.token.String(); got != tc.want {
 			t.Errorf("(%#v).String(): want %q, got %q", tc.token, tc.want, got)
 		}
 	}
