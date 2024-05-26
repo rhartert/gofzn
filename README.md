@@ -78,7 +78,7 @@ struct.
 ## Contributions
 
 Contributions are welcome! Please feel free to submit a pull request or open an 
-issue. Also, don't hesitate to reach out at [renaud@ptrh.io] if you plan to use
+issue. Also, don't hesitate to reach out at [ren@ptrh.io] if you plan to use
 this parser for your own project.
 
 [ren@ptrh.io]: mailto:ren@ptrh.io
