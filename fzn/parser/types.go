@@ -1,8 +1,13 @@
 package parser
 
-type Predicate struct{}
+type Predicate struct {
+	Value string
+}
+
 type Parameter struct{}
+
 type Variable struct{}
+
 type Constraint struct{}
 
 type SolveMethod int

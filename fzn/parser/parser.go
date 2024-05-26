@@ -74,6 +74,12 @@ func (p *parser) parse() error {
 	case isComment(p):
 		_, err := parseComment(p) // drop comments
 		return err
+	case isPredicate(p):
+		pred, err := parsePredicate(p)
+		if err != nil {
+			return err
+		}
+		return p.handler.AddPredicate(pred)
 	case isSolveGoal(p):
 		s, err := parseSolveGoal(p)
 		if err != nil {
