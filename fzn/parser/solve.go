@@ -42,7 +42,7 @@ func parseSolveGoal(p *parser) (*SolveGoal, error) {
 	case tok.Maximize:
 		sg.SolveMethod = SolveMethodMaximize
 	default:
-		return nil, fmt.Errorf("invalid solve method: [%s] %q", t.Type, t.Value)
+		return nil, fmt.Errorf("invalid solve method %s", t)
 	}
 
 	// No objective to parse for satisfy goals.
