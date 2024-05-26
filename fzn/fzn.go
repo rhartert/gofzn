@@ -60,7 +60,7 @@ func Parse(reader io.Reader, handler parser.Handler) error {
 func ParseModel(reader io.Reader) (*Model, error) {
 	mb := &modelBuilder{}
 	if err := Parse(reader, mb); err != nil {
-		return nil, fmt.Errorf("error reading model: %w", err)
+		return nil, err
 	}
 	return &mb.Model, nil
 }
