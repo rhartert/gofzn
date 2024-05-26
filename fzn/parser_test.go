@@ -1,4 +1,4 @@
-package parser
+package fzn
 
 import (
 	"testing"
@@ -42,7 +42,7 @@ func (i *instruction) AddSolveGoal(sg *SolveGoal) error {
 	return nil
 }
 
-type testCase struct {
+type testCaseParser struct {
 	desc    string
 	tokens  []tok.Token
 	want    instruction
@@ -50,7 +50,7 @@ type testCase struct {
 }
 
 func TestParseInstruction_invalid(t *testing.T) {
-	testParseInstruction(t, []testCase{
+	testParseInstruction(t, []testCaseParser{
 		{
 			desc:    "nil sequence of token",
 			tokens:  nil,
@@ -71,7 +71,7 @@ func TestParseInstruction_invalid(t *testing.T) {
 	})
 }
 func TestParseInstruction_comment(t *testing.T) {
-	testParseInstruction(t, []testCase{
+	testParseInstruction(t, []testCaseParser{
 		{
 			desc: "drop comment",
 			tokens: []tok.Token{
@@ -83,7 +83,7 @@ func TestParseInstruction_comment(t *testing.T) {
 }
 
 func TestParseInstruction_parameter(t *testing.T) {
-	testParseInstruction(t, []testCase{
+	testParseInstruction(t, []testCaseParser{
 		{
 			desc: "missing type",
 			tokens: []tok.Token{
@@ -298,7 +298,7 @@ func TestParseInstruction_parameter(t *testing.T) {
 }
 
 func TestParseInstruction_variable(t *testing.T) {
-	testParseInstruction(t, []testCase{
+	testParseInstruction(t, []testCaseParser{
 		{
 			desc: "missign var keyword",
 			tokens: []tok.Token{
@@ -553,7 +553,7 @@ func TestParseInstruction_variable(t *testing.T) {
 }
 
 func TestParseInstruction_constraint(t *testing.T) {
-	testParseInstruction(t, []testCase{
+	testParseInstruction(t, []testCaseParser{
 		{
 			desc: "missing constraint keyword",
 			tokens: []tok.Token{
@@ -689,7 +689,7 @@ func TestParseInstruction_constraint(t *testing.T) {
 }
 
 func TestParseInstruction_solveGoal(t *testing.T) {
-	testParseInstruction(t, []testCase{
+	testParseInstruction(t, []testCaseParser{
 		{
 			desc: "missing solve method",
 			tokens: []tok.Token{
@@ -771,7 +771,6 @@ func TestParseInstruction_solveGoal(t *testing.T) {
 				},
 			},
 		},
-
 		{
 			desc: "valid solve minimize (no annotation)",
 			tokens: []tok.Token{
@@ -808,11 +807,11 @@ func TestParseInstruction_solveGoal(t *testing.T) {
 	})
 }
 
-func testParseInstruction(t *testing.T, testCases []testCase) {
+func testParseInstruction(t *testing.T, testCases []testCaseParser) {
 	for _, tc := range testCases {
 		t.Run(tc.desc, func(t *testing.T) {
 			got := instruction{}
-			gotErr := ParseInstruction(tc.tokens, &got)
+			gotErr := parseInstruction(tc.tokens, &got)
 
 			if tc.wantErr && gotErr == nil {
 				t.Errorf("ParseInstruction(): want error, got nil")

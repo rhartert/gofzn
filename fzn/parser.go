@@ -1,6 +1,4 @@
-// Package parser provides functionalities to parse sequences of FlatZinc
-// lexical tokens into higher level objects such as variables and constraints.
-package parser
+package fzn
 
 import (
 	"fmt"
@@ -8,20 +6,10 @@ import (
 	"github.com/rhartert/gofzn/fzn/tok"
 )
 
-// Handler is an interface that clients must implement to handle the parsed
-// components of a FlatZinc model.
-type Handler interface {
-	AddPredicate(p *Predicate) error
-	AddParameter(p *Parameter) error
-	AddVariable(v *Variable) error
-	AddConstraint(c *Constraint) error
-	AddSolveGoal(s *SolveGoal) error
-}
-
-// ParseInstruction parses a sequence of tokens representing a FlatZinc
+// parseInstruction parses a sequence of tokens representing a FlatZinc
 // instruction and uses the provided Handler to manage the parsed elements.
 // It returns an error if the parsing fails or if the Handler reports an error.
-func ParseInstruction(tokens []tok.Token, handler Handler) error {
+func parseInstruction(tokens []tok.Token, handler Handler) error {
 	p := parser{
 		handler: handler,
 		tokens:  tokens,

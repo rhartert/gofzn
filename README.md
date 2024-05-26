@@ -38,7 +38,7 @@ go get github.com/rhartert/gofzn
 
 ### Reading a FlatZinc Model
 
-The easiest way to use GoFZN is to use the `ParseModel` function to read a 
+The easiest way to use GoFZN is to use the `fzm.ParseModel` function to read a 
 `fzn.Model` struct from a reader (e.g. a file descriptor).
 
 ```go
@@ -69,7 +69,7 @@ func main() {
 ```
 
 Alternatively, you can interface your solver directly with GoFZN by providing 
-the `fzn.Parse` function with your own implementation of the `parser.Handler`
+the `fzn.Parse` function with your own implementation of the `fzn.Handler`
 interface. This has two main advantages: (i) it allows you to use custom 
 validation rules for the declared entities, and (ii) it enables a slightly more 
 memory-efficient use of the library by avoiding the creation of the `fzn.Model` 
@@ -81,7 +81,7 @@ Contributions are welcome! Please feel free to submit a pull request or open an
 issue. Also, don't hesitate to reach out at [renaud@ptrh.io] if you plan to use
 this parser for your own project.
 
-[renaud@ptrh.io]: mailto:renaud@ptrh.io
+[ren@ptrh.io]: mailto:ren@ptrh.io
 [MiniZinc]: https://www.minizinc.org/
 [quite fun]: https://www.youtube.com/watch?v=HxaD_trXwRE
 [recursive descent parser]: https://en.wikipedia.org/wiki/Recursive_descent_parser

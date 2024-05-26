@@ -9,7 +9,6 @@ import (
 	"testing/iotest"
 
 	"github.com/google/go-cmp/cmp"
-	"github.com/rhartert/gofzn/fzn/parser"
 	"github.com/rhartert/ptr"
 )
 
@@ -43,106 +42,106 @@ var testCases = []testCase{
 		desc:  "cake.fzn",
 		input: strings.NewReader(testCakesFZN),
 		want: &Model{
-			Parameters: []parser.Parameter{
+			Parameters: []Parameter{
 				{
 					Identifier: "X_INTRODUCED_2_",
-					Array:      &parser.Array{Start: 1, End: 2},
-					Type:       parser.ParTypeInt,
-					Exprs: []parser.BasicLitExpr{
+					Array:      &Array{Start: 1, End: 2},
+					Type:       ParTypeInt,
+					Exprs: []BasicLitExpr{
 						{Int: ptr.Of(250)},
 						{Int: ptr.Of(200)},
 					},
 				},
 				{
 					Identifier: "X_INTRODUCED_6_",
-					Array:      &parser.Array{Start: 1, End: 2},
-					Type:       parser.ParTypeInt,
-					Exprs: []parser.BasicLitExpr{
+					Array:      &Array{Start: 1, End: 2},
+					Type:       ParTypeInt,
+					Exprs: []BasicLitExpr{
 						{Int: ptr.Of(75)},
 						{Int: ptr.Of(150)},
 					},
 				},
 				{
 					Identifier: "X_INTRODUCED_8_",
-					Array:      &parser.Array{Start: 1, End: 2},
-					Type:       parser.ParTypeInt,
-					Exprs: []parser.BasicLitExpr{
+					Array:      &Array{Start: 1, End: 2},
+					Type:       ParTypeInt,
+					Exprs: []BasicLitExpr{
 						{Int: ptr.Of(100)},
 						{Int: ptr.Of(150)},
 					},
 				},
 			},
-			Variables: []parser.Variable{
+			Variables: []Variable{
 				{
 					Identifier:  "b",
-					Type:        parser.VarTypeIntRange,
-					Domain:      parser.VarDomain{IntDomain: &parser.SetIntLit{Values: [][]int{{0, 3}}}},
-					Annotations: []parser.Annotation{{Identifier: "output_var"}},
+					Type:        VarTypeIntRange,
+					Domain:      VarDomain{IntDomain: &SetIntLit{Values: [][]int{{0, 3}}}},
+					Annotations: []Annotation{{Identifier: "output_var"}},
 				},
 				{
 					Identifier:  "c",
-					Type:        parser.VarTypeIntRange,
-					Domain:      parser.VarDomain{IntDomain: &parser.SetIntLit{Values: [][]int{{0, 6}}}},
-					Annotations: []parser.Annotation{{Identifier: "output_var"}},
+					Type:        VarTypeIntRange,
+					Domain:      VarDomain{IntDomain: &SetIntLit{Values: [][]int{{0, 6}}}},
+					Annotations: []Annotation{{Identifier: "output_var"}},
 				},
 				{
 					Identifier:  "X_INTRODUCED_0_",
-					Type:        parser.VarTypeIntRange,
-					Domain:      parser.VarDomain{IntDomain: &parser.SetIntLit{Values: [][]int{{0, 85000}}}},
-					Annotations: []parser.Annotation{{Identifier: "is_defined_var"}},
+					Type:        VarTypeIntRange,
+					Domain:      VarDomain{IntDomain: &SetIntLit{Values: [][]int{{0, 85000}}}},
+					Annotations: []Annotation{{Identifier: "is_defined_var"}},
 				},
 			},
-			Constraints: []parser.Constraint{
+			Constraints: []Constraint{
 				{
 					Identifier: "int_lin_le",
-					Expressions: []parser.Expr{
-						{Exprs: []parser.BasicExpr{{Identifier: "X_INTRODUCED_2_"}}},
-						{IsArray: true, Exprs: []parser.BasicExpr{{Identifier: "b"}, {Identifier: "c"}}},
-						{Exprs: []parser.BasicExpr{{LiteralExpr: parser.BasicLitExpr{Int: ptr.Of(4000)}}}},
+					Expressions: []Expr{
+						{Exprs: []BasicExpr{{Identifier: "X_INTRODUCED_2_"}}},
+						{IsArray: true, Exprs: []BasicExpr{{Identifier: "b"}, {Identifier: "c"}}},
+						{Exprs: []BasicExpr{{LiteralExpr: BasicLitExpr{Int: ptr.Of(4000)}}}},
 					},
 				},
 				{
 					Identifier: "int_lin_le",
-					Expressions: []parser.Expr{
-						{Exprs: []parser.BasicExpr{{Identifier: "X_INTRODUCED_6_"}}},
-						{IsArray: true, Exprs: []parser.BasicExpr{{Identifier: "b"}, {Identifier: "c"}}},
-						{Exprs: []parser.BasicExpr{{LiteralExpr: parser.BasicLitExpr{Int: ptr.Of(2000)}}}},
+					Expressions: []Expr{
+						{Exprs: []BasicExpr{{Identifier: "X_INTRODUCED_6_"}}},
+						{IsArray: true, Exprs: []BasicExpr{{Identifier: "b"}, {Identifier: "c"}}},
+						{Exprs: []BasicExpr{{LiteralExpr: BasicLitExpr{Int: ptr.Of(2000)}}}},
 					},
 				},
 				{
 					Identifier: "int_lin_le",
-					Expressions: []parser.Expr{
-						{Exprs: []parser.BasicExpr{{Identifier: "X_INTRODUCED_8_"}}},
-						{IsArray: true, Exprs: []parser.BasicExpr{{Identifier: "b"}, {Identifier: "c"}}},
-						{Exprs: []parser.BasicExpr{{LiteralExpr: parser.BasicLitExpr{Int: ptr.Of(500)}}}},
+					Expressions: []Expr{
+						{Exprs: []BasicExpr{{Identifier: "X_INTRODUCED_8_"}}},
+						{IsArray: true, Exprs: []BasicExpr{{Identifier: "b"}, {Identifier: "c"}}},
+						{Exprs: []BasicExpr{{LiteralExpr: BasicLitExpr{Int: ptr.Of(500)}}}},
 					},
 				},
 				{
 					Identifier: "int_lin_eq",
-					Expressions: []parser.Expr{
-						{IsArray: true, Exprs: []parser.BasicExpr{
-							{LiteralExpr: parser.BasicLitExpr{Int: ptr.Of(400)}},
-							{LiteralExpr: parser.BasicLitExpr{Int: ptr.Of(450)}},
-							{LiteralExpr: parser.BasicLitExpr{Int: ptr.Of(-1)}},
+					Expressions: []Expr{
+						{IsArray: true, Exprs: []BasicExpr{
+							{LiteralExpr: BasicLitExpr{Int: ptr.Of(400)}},
+							{LiteralExpr: BasicLitExpr{Int: ptr.Of(450)}},
+							{LiteralExpr: BasicLitExpr{Int: ptr.Of(-1)}},
 						}},
-						{IsArray: true, Exprs: []parser.BasicExpr{
+						{IsArray: true, Exprs: []BasicExpr{
 							{Identifier: "b"},
 							{Identifier: "c"},
 							{Identifier: "X_INTRODUCED_0_"},
 						}},
-						{Exprs: []parser.BasicExpr{{LiteralExpr: parser.BasicLitExpr{Int: ptr.Of(0)}}}},
+						{Exprs: []BasicExpr{{LiteralExpr: BasicLitExpr{Int: ptr.Of(0)}}}},
 					},
-					Annotations: []parser.Annotation{
+					Annotations: []Annotation{
 						{Identifier: "ctx_pos"},
-						{Identifier: "defines_var", Exprs: [][]parser.AnnExpr{
+						{Identifier: "defines_var", Exprs: [][]AnnExpr{
 							{{VarID: ptr.Of("X_INTRODUCED_0_")}},
 						}},
 					},
 				},
 			},
-			SolveGoals: []parser.SolveGoal{{
-				SolveMethod: parser.SolveMethodMaximize,
-				Objective:   parser.BasicExpr{Identifier: "X_INTRODUCED_0_"},
+			SolveGoals: []SolveGoal{{
+				SolveMethod: SolveMethodMaximize,
+				Objective:   BasicExpr{Identifier: "X_INTRODUCED_0_"},
 			}},
 		},
 	},

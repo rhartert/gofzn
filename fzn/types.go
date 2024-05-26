@@ -1,4 +1,4 @@
-package parser
+package fzn
 
 type Predicate struct {
 	Value string
