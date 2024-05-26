@@ -69,6 +69,17 @@ func TestParseInstruction_invalid(t *testing.T) {
 		},
 	})
 }
+func TestParseInstruction_comment(t *testing.T) {
+	testParseInstruction(t, []testCase{
+		{
+			desc: "drop comment",
+			tokens: []tok.Token{
+				{Type: tok.Comment, Value: "test comment"},
+			},
+			want: instruction{},
+		},
+	})
+}
 
 func TestParseInstruction_solveGoal(t *testing.T) {
 	testParseInstruction(t, []testCase{

@@ -71,6 +71,9 @@ func (p *parser) lookAhead(n int) tok.Token {
 // Handler reports an error.
 func (p *parser) parse() error {
 	switch {
+	case isComment(p):
+		_, err := parseComment(p) // drop comments
+		return err
 	case isSolveGoal(p):
 		s, err := parseSolveGoal(p)
 		if err != nil {
