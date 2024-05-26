@@ -197,7 +197,7 @@ func TestTokenizer_Tokenize(t *testing.T) {
 			want = append(want, Token{EOF, ""})
 		}
 		if diff := cmp.Diff(want, got); diff != "" {
-			t.Errorf("Tokenize(%q): CNF mismatch (-want +got):\n%s", tc.input, diff)
+			t.Errorf("Tokenize(%q): mismatch (-want +got):\n%s", tc.input, diff)
 		}
 	}
 }
