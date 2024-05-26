@@ -80,6 +80,12 @@ func (p *parser) parse() error {
 			return err
 		}
 		return p.handler.AddPredicate(pred)
+	case isParameter(p):
+		param, err := parseParameter(p)
+		if err != nil {
+			return err
+		}
+		return p.handler.AddParameter(param)
 	case isConstraint(p):
 		c, err := parseConstraint(p)
 		if err != nil {
@@ -93,6 +99,6 @@ func (p *parser) parse() error {
 		}
 		return p.handler.AddSolveGoal(s)
 	default:
-		return fmt.Errorf("not a recognized instruction")
+		return fmt.Errorf("unrecognized instruction")
 	}
 }

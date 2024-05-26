@@ -4,7 +4,22 @@ type Predicate struct {
 	Value string
 }
 
-type Parameter struct{}
+type Parameter struct {
+	Identifier string
+	ParType    ParType
+	Array      *Array
+	Exprs      []BasicLitExpr
+}
+
+type ParType int
+
+const (
+	ParTypeUnknown ParType = iota
+	ParTypeInt
+	ParTypeBool
+	ParTypeFloat
+	ParTypeSetOfInt
+)
 
 type Variable struct{}
 type Constraint struct {

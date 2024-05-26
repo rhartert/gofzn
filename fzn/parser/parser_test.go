@@ -5,6 +5,7 @@ import (
 
 	"github.com/google/go-cmp/cmp"
 	tok "github.com/rhartert/gofzn/fzn/tokenizer"
+	"github.com/rhartert/ptr"
 )
 
 // instruction implements the Handler interface.
@@ -77,6 +78,221 @@ func TestParseInstruction_comment(t *testing.T) {
 				{Type: tok.Comment, Value: "test comment"},
 			},
 			want: instruction{},
+		},
+	})
+}
+
+func TestParseInstruction_parameter(t *testing.T) {
+	testParseInstruction(t, []testCase{
+		{
+			desc: "missing type",
+			tokens: []tok.Token{
+				{Type: tok.Colon},
+				{Type: tok.Identifier, Value: "foo"},
+				{Type: tok.Assign},
+				{Type: tok.IntLit, Value: "42"},
+				{Type: tok.EOI},
+			},
+			wantErr: true,
+		},
+		{
+			desc: "missing colon",
+			tokens: []tok.Token{
+				{Type: tok.IntType},
+				{Type: tok.Identifier, Value: "foo"},
+				{Type: tok.Assign},
+				{Type: tok.IntLit, Value: "42"},
+				{Type: tok.EOI},
+			},
+			wantErr: true,
+		},
+		{
+			desc: "missing identifier",
+			tokens: []tok.Token{
+				{Type: tok.IntType},
+				{Type: tok.Colon},
+				{Type: tok.Assign},
+				{Type: tok.IntLit, Value: "42"},
+				{Type: tok.EOI},
+			},
+			wantErr: true,
+		},
+		{
+			desc: "missing assign",
+			tokens: []tok.Token{
+				{Type: tok.IntType},
+				{Type: tok.Colon},
+				{Type: tok.Identifier, Value: "foo"},
+				{Type: tok.IntLit, Value: "42"},
+				{Type: tok.EOI},
+			},
+			wantErr: true,
+		},
+		{
+			desc: "missing assigned expression",
+			tokens: []tok.Token{
+				{Type: tok.IntType},
+				{Type: tok.Colon},
+				{Type: tok.Identifier, Value: "foo"},
+				{Type: tok.Assign},
+				{Type: tok.EOI},
+			},
+			wantErr: true,
+		},
+		{
+			desc: "missing end of instruction",
+			tokens: []tok.Token{
+				{Type: tok.IntType},
+				{Type: tok.Colon},
+				{Type: tok.Identifier, Value: "foo"},
+				{Type: tok.Assign},
+				{Type: tok.IntLit, Value: "42"},
+			},
+			wantErr: true,
+		},
+		{
+			desc: "invalid type",
+			tokens: []tok.Token{
+				{Type: tok.Error},
+				{Type: tok.Colon},
+				{Type: tok.Identifier, Value: "foo"},
+				{Type: tok.Assign},
+				{Type: tok.IntLit, Value: "42"},
+				{Type: tok.EOI},
+			},
+			wantErr: true,
+		},
+		{
+			desc: "invalid array",
+			tokens: []tok.Token{
+				{Type: tok.Array},
+				{Type: tok.ArrayStart},
+				{Type: tok.ArrayEnd},
+				{Type: tok.Colon},
+				{Type: tok.Identifier, Value: "foo"},
+				{Type: tok.Assign},
+				{Type: tok.IntLit, Value: "42"},
+				{Type: tok.EOI},
+			},
+			wantErr: true,
+		},
+		{
+			desc: "valid int parameter",
+			tokens: []tok.Token{
+				{Type: tok.IntType},
+				{Type: tok.Colon},
+				{Type: tok.Identifier, Value: "foo"},
+				{Type: tok.Assign},
+				{Type: tok.IntLit, Value: "42"},
+				{Type: tok.EOI},
+			},
+			want: instruction{
+				Parameter: &Parameter{
+					Identifier: "foo",
+					ParType:    ParTypeInt,
+					Exprs:      []BasicLitExpr{{Int: ptr.Of(42)}},
+				},
+			},
+		},
+		{
+			desc: "valid bool parameter",
+			tokens: []tok.Token{
+				{Type: tok.BoolType},
+				{Type: tok.Colon},
+				{Type: tok.Identifier, Value: "foo"},
+				{Type: tok.Assign},
+				{Type: tok.BoolLit, Value: "true"},
+				{Type: tok.EOI},
+			},
+			want: instruction{
+				Parameter: &Parameter{
+					Identifier: "foo",
+					ParType:    ParTypeBool,
+					Exprs:      []BasicLitExpr{{Bool: ptr.Of(true)}},
+				},
+			},
+		},
+		{
+			desc: "valid float parameter",
+			tokens: []tok.Token{
+				{Type: tok.FloatType},
+				{Type: tok.Colon},
+				{Type: tok.Identifier, Value: "foo"},
+				{Type: tok.Assign},
+				{Type: tok.FloatLit, Value: "42.0"},
+				{Type: tok.EOI},
+			},
+			want: instruction{
+				Parameter: &Parameter{
+					Identifier: "foo",
+					ParType:    ParTypeFloat,
+					Exprs:      []BasicLitExpr{{Float: ptr.Of(42.0)}},
+				},
+			},
+		},
+		{
+			desc: "valid set of int parameter",
+			tokens: []tok.Token{
+				{Type: tok.Set},
+				{Type: tok.Of},
+				{Type: tok.IntType},
+				{Type: tok.Colon},
+				{Type: tok.Identifier, Value: "foo"},
+				{Type: tok.Assign},
+				{Type: tok.SetStart},
+				{Type: tok.IntLit, Value: "42"},
+				{Type: tok.Comma},
+				{Type: tok.IntLit, Value: "44"},
+				{Type: tok.Comma},
+				{Type: tok.IntLit, Value: "45"},
+				{Type: tok.SetEnd},
+				{Type: tok.EOI},
+			},
+			want: instruction{
+				Parameter: &Parameter{
+					Identifier: "foo",
+					ParType:    ParTypeSetOfInt,
+					Exprs: []BasicLitExpr{{Set: &SetLit{
+						SetInt: &SetIntLit{
+							Values: [][]int{{42, 42}, {44, 45}},
+						},
+					}}},
+				},
+			},
+		},
+
+		{
+			desc: "valid array of parameters",
+			tokens: []tok.Token{
+				{Type: tok.Array},
+				{Type: tok.ArrayStart},
+				{Type: tok.IntLit, Value: "1"},
+				{Type: tok.Range},
+				{Type: tok.IntLit, Value: "2"},
+				{Type: tok.ArrayEnd},
+				{Type: tok.Of},
+				{Type: tok.IntType},
+				{Type: tok.Colon},
+				{Type: tok.Identifier, Value: "foo"},
+				{Type: tok.Assign},
+				{Type: tok.ArrayStart},
+				{Type: tok.IntLit, Value: "42"},
+				{Type: tok.Comma},
+				{Type: tok.IntLit, Value: "1337"},
+				{Type: tok.ArrayEnd},
+				{Type: tok.EOI},
+			},
+			want: instruction{
+				Parameter: &Parameter{
+					Identifier: "foo",
+					ParType:    ParTypeInt,
+					Array:      &Array{1, 2},
+					Exprs: []BasicLitExpr{
+						{Int: ptr.Of(42)},
+						{Int: ptr.Of(1337)},
+					},
+				},
+			},
 		},
 	})
 }
