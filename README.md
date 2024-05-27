@@ -9,12 +9,12 @@ motivated by the absence of FlatZinc parser in Go.
 
 GoFZN is a [recursive descent parser] with a structure that closely mirrors the 
 FlatZinc grammar. GoFZN has been entirely handwritten and does not rely on 
-parser generators like YACC or Bison. Why you'd ask? Because writting top-down 
-parsers is actually [quite fun]! FlatZinc is a rather simple language (in terms 
-of grammar that is) and is well-suited for simple top-down handwritten parsers. 
-Having a handwritten tokenizer and parser also makes it easy to adjust GoFZN 
-(e.g. to grammar changes) while enabling high-quality error messages in case of 
-syntax errors. 
+parser generators like YACC or Bison. Why you'd ask? Because writting tokenizers 
+and top-down parsers is actually [quite fun]! FlatZinc is a rather simple 
+language (in terms of grammar that is) and is well-suited for simple top-down 
+handwritten parsers. Having a handwritten tokenizer and parser also makes it 
+easy to adjust GoFZN (e.g. to grammar changes) while enabling high-quality
+ error messages in case of syntax errors. 
 
 > ⚠️ While the repository already provides the functionality needed to interface 
 > with FlatZinc, it is still in its alpha stage and likely to undergo changes. 
@@ -22,9 +22,10 @@ syntax errors.
 
 ## What's FlatZinc?
 
-FlatZinc is a subset of [MiniZinc], a high-level constraint modeling language 
-that allows you to easily express and solve discrete optimization problems. 
-FlatZinc is particularly used by constraint solvers integrating with MiniZinc.
+FlatZinc is a subset of [MiniZinc], a high-level constraint modeling language
+designed to easily express and solve discrete optimization problems. Think of 
+MiniZinc as the language humans use to write models, while FlatZinc serves as
+the language constraint solvers use to read and process these models.
 
 ## Usage
 
