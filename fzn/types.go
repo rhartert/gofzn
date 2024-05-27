@@ -70,8 +70,8 @@ type Constraint struct {
 // Expr represents an expression in FlatZinc, which is either a single basic
 // expression or an array of basic expressions.
 type Expr struct {
-	IsArray bool        // Flag indicating if the expression is an array.
-	Exprs   []BasicExpr // List of basic expressions.
+	Expr  *BasicExpr  // Single basic expression
+	Exprs []BasicExpr // List of basic expressions.
 }
 
 // SolveMethod represents the method to solve a FlatZinc model.
@@ -121,22 +121,22 @@ type Literal struct {
 	SetFloat *SetFloatLit // Optional set of floats.
 }
 
-// SetIntLit is a set of int in FlatZinc. It is represented as a list of
-// continuous range of integers. For example, set {1, 2, 3, 5} is
-// represented as [[1, 3], [5, 5]].
+// SetIntLit is a set of int in FlatZinc.
 type SetIntLit struct {
+	// Values is set represented as a list of continuous range of integers.
+	// For example, set {1, 2, 3, 5} is represented as [[1, 3], [5, 5]].
 	Values [][]int
 }
 
-// SetFloatLit is a set of float in FlatZinc. It is represented as a list of
-// continuous range of floats. For example float set [[1.0, 2.0], [3.0, 3.0]]
-// contains all the floats between 1.0 and 2.0 (inclusive) and 3.0.
+// SetFloatLit is a set of float in FlatZinc.
 type SetFloatLit struct {
+	// Values is a set represented as a list of continuous range of floats.
+	// For example float set [[1.0, 2.0], [3.0, 3.0]] contains all the floats
+	// between 1.0 and 2.0 (inclusive) and 3.0.
 	Values [][]float64
 }
 
 // Array represents the index set of a FlatZinc array.
 type Array struct {
-	Start int // Start index of the array.
-	End   int // End index of the array (inclusive).
+	Start, End int // Start and end indexes (inclusive) of the array.
 }

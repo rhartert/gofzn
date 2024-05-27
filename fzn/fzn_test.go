@@ -443,7 +443,7 @@ func TestParse_constraint(t *testing.T) {
 				Constraint: &Constraint{
 					Identifier: "foobar",
 					Expressions: []Expr{
-						{Exprs: []BasicExpr{{Identifier: "X_VAR"}}},
+						{Expr: ptr.Of(BasicExpr{Identifier: "X_VAR"})},
 					},
 				},
 			},
@@ -454,8 +454,8 @@ func TestParse_constraint(t *testing.T) {
 				Constraint: &Constraint{
 					Identifier: "foobar",
 					Expressions: []Expr{
-						{Exprs: []BasicExpr{{Identifier: "X_VAR"}}},
-						{Exprs: []BasicExpr{{Identifier: "Y_VAR"}}},
+						{Expr: ptr.Of(BasicExpr{Identifier: "X_VAR"})},
+						{Expr: ptr.Of(BasicExpr{Identifier: "Y_VAR"})},
 					},
 					Annotations: []Annotation{{Identifier: "bar"}},
 				},
@@ -467,7 +467,6 @@ func TestParse_constraint(t *testing.T) {
 				Constraint: &Constraint{
 					Identifier: "foobar",
 					Expressions: []Expr{{
-						IsArray: true,
 						Exprs: []BasicExpr{
 							{Identifier: "X_VAR"},
 							{Identifier: "Y_VAR"},

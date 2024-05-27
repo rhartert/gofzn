@@ -22,7 +22,7 @@ type Model struct {
 // fully constructed Model.
 //
 // This function only checks for syntactic correctness and does not verify
-// that the Model is semantically correct. See [Parse] for details.
+// that the Model is semantically correct (see [Parse] for details).
 func ParseModel(reader io.Reader) (*Model, error) {
 	mb := &modelBuilder{}
 	if err := Parse(reader, mb); err != nil {
@@ -43,18 +43,19 @@ type Handler interface {
 	HandleSolveGoal(s *SolveGoal) error
 }
 
-// Parse parses an FZN model from the provided reader, invoking the handler
-// functions during the parsing process. It stops and returns an error if the
-// model is syntactically incorrect or if the handler returns an error.
+// Parse parses a FlatZinc model from the reader, actioning the given [Handler]
+// interface to handle the parsed model items. It stops and returns an error if
+// the model is syntactically incorrect or if the handler returns an error.
 //
 // This function only checks for syntactic correctness and does not verify
-// semantic correctness. For instance, the following instruction defines a
-// variable with an invalid domain but will still be parsed successfully:
+// that the model is semantically correct. For instance, the following
+// instruction will be parsed successfully despite defining a variable with an
+// invalid domain:
 //
 //	var 10..0: X; // semantically invalid domain
 //
-// It is the responsibility of the Handler's implementation to validate the
-// model's semantic to meet its need.
+// It is the responsibility of the given Handler's implementation to validate
+// the model's semantic to meet its need.
 func Parse(reader io.Reader, handler Handler) error {
 	tokenizer := tok.Tokenizer{}
 	scanner := bufio.NewScanner(reader)

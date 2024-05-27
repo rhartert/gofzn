@@ -16,10 +16,6 @@ handwritten parsers. Having a handwritten tokenizer and parser also makes it
 easy to adjust GoFZN (e.g. to grammar changes) while enabling high-quality
  error messages in case of syntax errors. 
 
-> ⚠️ While the repository already provides the functionality needed to interface 
-> with FlatZinc, it is still in its alpha stage and likely to undergo changes. 
-> However, we do not anticipate these changes to be fundamental.
-
 ## What's FlatZinc?
 
 FlatZinc is a subset of [MiniZinc], a high-level constraint modeling language

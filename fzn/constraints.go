@@ -70,8 +70,7 @@ func parseExpr(p *parser) (Expr, error) {
 			return Expr{}, err
 		}
 		return Expr{
-			IsArray: true,
-			Exprs:   es,
+			Exprs: es,
 		}, nil
 	}
 
@@ -80,6 +79,6 @@ func parseExpr(p *parser) (Expr, error) {
 		return Expr{}, err
 	}
 	return Expr{
-		Exprs: []BasicExpr{e},
+		Expr: &e,
 	}, nil
 }

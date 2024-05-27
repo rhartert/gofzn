@@ -75,41 +75,42 @@ var testCakesModel = Model{
 		{
 			Identifier: "int_lin_le",
 			Expressions: []Expr{
-				{Exprs: []BasicExpr{{Identifier: "X_INTRODUCED_2_"}}},
-				{IsArray: true, Exprs: []BasicExpr{{Identifier: "b"}, {Identifier: "c"}}},
-				{Exprs: []BasicExpr{{Literal: Literal{Int: ptr.Of(4000)}}}},
+
+				{Expr: ptr.Of(BasicExpr{Identifier: "X_INTRODUCED_2_"})},
+				{Exprs: []BasicExpr{{Identifier: "b"}, {Identifier: "c"}}},
+				{Expr: ptr.Of(BasicExpr{Literal: Literal{Int: ptr.Of(4000)}})},
 			},
 		},
 		{
 			Identifier: "int_lin_le",
 			Expressions: []Expr{
-				{Exprs: []BasicExpr{{Identifier: "X_INTRODUCED_6_"}}},
-				{IsArray: true, Exprs: []BasicExpr{{Identifier: "b"}, {Identifier: "c"}}},
-				{Exprs: []BasicExpr{{Literal: Literal{Int: ptr.Of(2000)}}}},
+				{Expr: ptr.Of(BasicExpr{Identifier: "X_INTRODUCED_6_"})},
+				{Exprs: []BasicExpr{{Identifier: "b"}, {Identifier: "c"}}},
+				{Expr: ptr.Of(BasicExpr{Literal: Literal{Int: ptr.Of(2000)}})},
 			},
 		},
 		{
 			Identifier: "int_lin_le",
 			Expressions: []Expr{
-				{Exprs: []BasicExpr{{Identifier: "X_INTRODUCED_8_"}}},
-				{IsArray: true, Exprs: []BasicExpr{{Identifier: "b"}, {Identifier: "c"}}},
-				{Exprs: []BasicExpr{{Literal: Literal{Int: ptr.Of(500)}}}},
+				{Expr: ptr.Of(BasicExpr{Identifier: "X_INTRODUCED_8_"})},
+				{Exprs: []BasicExpr{{Identifier: "b"}, {Identifier: "c"}}},
+				{Expr: ptr.Of(BasicExpr{Literal: Literal{Int: ptr.Of(500)}})},
 			},
 		},
 		{
 			Identifier: "int_lin_eq",
 			Expressions: []Expr{
-				{IsArray: true, Exprs: []BasicExpr{
+				{Exprs: []BasicExpr{
 					{Literal: Literal{Int: ptr.Of(400)}},
 					{Literal: Literal{Int: ptr.Of(450)}},
 					{Literal: Literal{Int: ptr.Of(-1)}},
 				}},
-				{IsArray: true, Exprs: []BasicExpr{
+				{Exprs: []BasicExpr{
 					{Identifier: "b"},
 					{Identifier: "c"},
 					{Identifier: "X_INTRODUCED_0_"},
 				}},
-				{Exprs: []BasicExpr{{Literal: Literal{Int: ptr.Of(0)}}}},
+				{Expr: ptr.Of(BasicExpr{Literal: Literal{Int: ptr.Of(0)}})},
 			},
 			Annotations: []Annotation{
 				{Identifier: "ctx_pos"},
