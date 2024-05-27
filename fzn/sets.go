@@ -9,50 +9,11 @@ import (
 // Parsers for sets
 // ----------------
 //
-//	SetLit      ::= "set" "of" SetIntLit
-//                | SetIntLit
-//		          | SetFloatLit
-//
 //	SetIntLit   ::= "{" [ <int-literal> "," ... ] "}"
 //		          | <int-literal> ".." <int-literal>
 //
 //	SetFloatLit ::= "{" [ <float-literal> "," ... ] "}"
 //		          | <float-literal> ".." <float-literal>
-
-func isSetLit(p *parser) bool {
-	switch p.lookAhead(0).Type {
-	case tok.SetStart:
-		return true
-	case tok.IntLit:
-		return p.lookAhead(1).Type == tok.Range
-	case tok.FloatLit:
-		return p.lookAhead(1).Type == tok.Range
-	default:
-		return false
-	}
-}
-
-func parseSetLit(p *parser) (SetLit, error) {
-	la0 := p.lookAhead(0).Type
-	la1 := p.lookAhead(1).Type
-
-	switch {
-	case la0 == tok.IntLit || la0 == tok.SetStart && la1 == tok.IntLit:
-		is, err := parseSetIntLit(p)
-		if err != nil {
-			return SetLit{}, err
-		}
-		return SetLit{SetInt: &is}, nil
-	case la0 == tok.FloatLit || la0 == tok.SetStart && la1 == tok.FloatLit:
-		fs, err := parseSetFloatLit(p)
-		if err != nil {
-			return SetLit{}, err
-		}
-		return SetLit{SetFloat: &fs}, nil
-	default:
-		return SetLit{}, fmt.Errorf("not a set literal")
-	}
-}
 
 func parseSetOfInt(p *parser) (SetIntLit, error) {
 	if !p.nextIf(tok.Set) {
@@ -62,6 +23,17 @@ func parseSetOfInt(p *parser) (SetIntLit, error) {
 		return SetIntLit{}, fmt.Errorf("not a set")
 	}
 	return parseSetIntLit(p)
+}
+
+func isSetIntLit(p *parser) bool {
+	switch p.lookAhead(0).Type {
+	case tok.IntLit:
+		return p.lookAhead(1).Type == tok.Range
+	case tok.SetStart:
+		return p.lookAhead(1).Type == tok.IntLit
+	default:
+		return false
+	}
 }
 
 // parseSetIntLit parses a set of int either represented as a range or
@@ -93,6 +65,17 @@ func parseSetIntLit(p *parser) (SetIntLit, error) {
 	}
 
 	return SetIntLit{Values: toSetRanges(values)}, nil
+}
+
+func isSetFloatLit(p *parser) bool {
+	switch p.lookAhead(0).Type {
+	case tok.FloatLit:
+		return p.lookAhead(1).Type == tok.Range
+	case tok.SetStart:
+		return p.lookAhead(1).Type == tok.FloatLit
+	default:
+		return false
+	}
 }
 
 // parseSetFloatLit parses a set of float64 either represented as a range or

@@ -112,10 +112,10 @@ func parseBasicVarType(p *parser) (VarDomain, VarType, error) {
 	}
 }
 
-func toFloatDomain(r RangeFloat) VarDomain {
+func toFloatDomain(r rangeFloat) VarDomain {
 	return VarDomain{FloatDomain: &SetFloatLit{Values: [][]float64{{r.Min, r.Max}}}}
 }
 
-func toIntDomain(r RangeInt) VarDomain {
+func toIntDomain(r rangeInt) VarDomain {
 	return VarDomain{IntDomain: &SetIntLit{Values: [][]int{{r.Min, r.Max}}}}
 }

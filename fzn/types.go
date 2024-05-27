@@ -8,7 +8,7 @@ type Parameter struct {
 	Identifier string
 	Type       ParType
 	Array      *Array
-	Exprs      []BasicLitExpr
+	Exprs      []Literal
 }
 
 type ParType int
@@ -76,25 +76,23 @@ type Annotation struct {
 }
 
 type AnnExpr struct {
-	BasicLitExpr *BasicLitExpr
-	VarID        *string
-	StringLit    *string
-	Annotation   *Annotation
+	Literal    *Literal
+	VarID      *string
+	StringLit  *string
+	Annotation *Annotation
 }
 
 type BasicExpr struct {
-	Identifier  string
-	LiteralExpr BasicLitExpr
+	Identifier string
+	Literal    Literal
 }
 
-type BasicLitExpr struct {
-	Int   *int
-	Bool  *bool
-	Float *float64
-	Set   *SetLit
-}
-
-type SetLit struct {
+// Literal represents a literal which can either be an int, a bool, a float,
+// or a set.
+type Literal struct {
+	Int      *int
+	Bool     *bool
+	Float    *float64
 	SetInt   *SetIntLit
 	SetFloat *SetFloatLit
 }
@@ -105,14 +103,6 @@ type SetIntLit struct {
 
 type SetFloatLit struct {
 	Values [][]float64
-}
-
-type RangeInt struct {
-	Min, Max int
-}
-
-type RangeFloat struct {
-	Min, Max float64
 }
 
 type Array struct {

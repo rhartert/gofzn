@@ -98,18 +98,18 @@ func parseParType(p *parser) (ParType, error) {
 	}
 }
 
-func parseParamExpr(p *parser) ([]BasicLitExpr, error) {
+func parseParamExpr(p *parser) ([]Literal, error) {
 	if !p.nextIf(tok.ArrayStart) {
-		expr, err := parseBasicLiteralExpr(p)
+		expr, err := parseLiteral(p)
 		if err != nil {
 			return nil, err
 		}
-		return []BasicLitExpr{expr}, nil
+		return []Literal{expr}, nil
 	}
 
-	exprs := make([]BasicLitExpr, 0, 8)
+	exprs := make([]Literal, 0, 8)
 	for !p.nextIf(tok.ArrayEnd) {
-		expr, err := parseBasicLiteralExpr(p)
+		expr, err := parseLiteral(p)
 		if err != nil {
 			return nil, err
 		}

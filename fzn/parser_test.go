@@ -190,7 +190,7 @@ func TestParseInstruction_parameter(t *testing.T) {
 				Parameter: &Parameter{
 					Identifier: "foo",
 					Type:       ParTypeInt,
-					Exprs:      []BasicLitExpr{{Int: ptr.Of(42)}},
+					Exprs:      []Literal{{Int: ptr.Of(42)}},
 				},
 			},
 		},
@@ -208,7 +208,7 @@ func TestParseInstruction_parameter(t *testing.T) {
 				Parameter: &Parameter{
 					Identifier: "foo",
 					Type:       ParTypeBool,
-					Exprs:      []BasicLitExpr{{Bool: ptr.Of(true)}},
+					Exprs:      []Literal{{Bool: ptr.Of(true)}},
 				},
 			},
 		},
@@ -226,7 +226,7 @@ func TestParseInstruction_parameter(t *testing.T) {
 				Parameter: &Parameter{
 					Identifier: "foo",
 					Type:       ParTypeFloat,
-					Exprs:      []BasicLitExpr{{Float: ptr.Of(42.0)}},
+					Exprs:      []Literal{{Float: ptr.Of(42.0)}},
 				},
 			},
 		},
@@ -252,10 +252,8 @@ func TestParseInstruction_parameter(t *testing.T) {
 				Parameter: &Parameter{
 					Identifier: "foo",
 					Type:       ParTypeSetOfInt,
-					Exprs: []BasicLitExpr{{Set: &SetLit{
-						SetInt: &SetIntLit{
-							Values: [][]int{{42, 42}, {44, 45}},
-						},
+					Exprs: []Literal{{SetInt: &SetIntLit{
+						Values: [][]int{{42, 42}, {44, 45}},
 					}}},
 				},
 			},
@@ -287,7 +285,7 @@ func TestParseInstruction_parameter(t *testing.T) {
 					Identifier: "foo",
 					Type:       ParTypeInt,
 					Array:      &Array{1, 2},
-					Exprs: []BasicLitExpr{
+					Exprs: []Literal{
 						{Int: ptr.Of(42)},
 						{Int: ptr.Of(1337)},
 					},

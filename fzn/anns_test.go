@@ -158,7 +158,7 @@ func TestParserInstruction_parseAnnotation(t *testing.T) {
 			want: Annotation{
 				Identifier: "foo",
 				Exprs: [][]AnnExpr{{{
-					BasicLitExpr: &BasicLitExpr{
+					Literal: &Literal{
 						Int: ptr.Of(42),
 					},
 				}}},
@@ -178,7 +178,7 @@ func TestParserInstruction_parseAnnotation(t *testing.T) {
 			want: Annotation{
 				Identifier: "foo",
 				Exprs: [][]AnnExpr{
-					{{BasicLitExpr: &BasicLitExpr{Int: ptr.Of(42)}}},
+					{{Literal: &Literal{Int: ptr.Of(42)}}},
 					{{VarID: ptr.Of("bar")}},
 				},
 			},
@@ -200,11 +200,11 @@ func TestParserInstruction_parseAnnotation(t *testing.T) {
 			want: Annotation{
 				Identifier: "foo",
 				Exprs: [][]AnnExpr{
-					{{BasicLitExpr: &BasicLitExpr{Int: ptr.Of(42)}}},
+					{{Literal: &Literal{Int: ptr.Of(42)}}},
 					{{Annotation: &Annotation{
 						Identifier: "bar",
 						Exprs: [][]AnnExpr{{
-							{BasicLitExpr: &BasicLitExpr{Int: ptr.Of(1337)}},
+							{Literal: &Literal{Int: ptr.Of(1337)}},
 						}},
 					}}},
 				},

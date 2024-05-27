@@ -75,12 +75,12 @@ func parseAnnExpr(p *parser) ([]AnnExpr, error) {
 
 func basicAnnExpr(p *parser) (*AnnExpr, error) {
 	switch {
-	case isBasicLiteralExpr(p):
-		ble, err := parseBasicLiteralExpr(p)
+	case isLiteral(p):
+		ble, err := parseLiteral(p)
 		if err != nil {
 			return nil, err
 		}
-		return &AnnExpr{BasicLitExpr: &ble}, nil
+		return &AnnExpr{Literal: &ble}, nil
 	case isIdentifier(p):
 		if p.lookAhead(1).Type == tok.TupleStart {
 			a, err := parseAnnotation(p)

@@ -27,6 +27,56 @@ import (
 //
 //  <identifier>      ::= [A-Za-z_][A-Za-z0-9_]*
 
+func isLiteral(p *parser) bool {
+	switch p.lookAhead(0).Type {
+	case tok.BoolLit, tok.IntLit, tok.FloatLit:
+		return true
+	default:
+		return isSetIntLit(p) || isSetFloatLit(p)
+	}
+}
+
+func parseLiteral(p *parser) (Literal, error) {
+	if isSetIntLit(p) {
+		s, err := parseSetIntLit(p)
+		if err != nil {
+			return Literal{}, err
+		}
+		return Literal{SetInt: &s}, nil
+	}
+
+	if isSetFloatLit(p) {
+		s, err := parseSetFloatLit(p)
+		if err != nil {
+			return Literal{}, err
+		}
+		return Literal{SetFloat: &s}, nil
+	}
+
+	switch tt := p.lookAhead(0).Type; tt {
+	case tok.BoolLit:
+		b, err := parseBoolLit(p)
+		if err != nil {
+			return Literal{}, err
+		}
+		return Literal{Bool: &b}, nil
+	case tok.IntLit:
+		i, err := parseIntLit(p)
+		if err != nil {
+			return Literal{}, err
+		}
+		return Literal{Int: &i}, nil
+	case tok.FloatLit:
+		f, err := parseFloatLit(p)
+		if err != nil {
+			return Literal{}, err
+		}
+		return Literal{Float: &f}, nil
+	default:
+		return Literal{}, fmt.Errorf("token is not part of valid literal: %s", tt)
+	}
+}
+
 // parseBoolLit parses a bool. The function expects the parser to be positioned
 // on a BoolLit token.
 func parseBoolLit(p *parser) (bool, error) {
