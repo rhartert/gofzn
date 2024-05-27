@@ -46,7 +46,8 @@ func (p *parser) nextIf(tt tok.Type) bool {
 }
 
 // lookAhead returns the token at n positions from the current position without
-// impacting the result of p.next.
+// impacting the result of p.next. In particular, lookAhead(0) peeks at the
+// next token without consuming it.
 func (p *parser) lookAhead(n int) tok.Token {
 	if i := p.pos + n; i < len(p.tokens) {
 		return p.tokens[i]
@@ -58,41 +59,57 @@ func (p *parser) lookAhead(n int) tok.Token {
 // appropriate Handler method. It returns an error if parsing fails or if the
 // Handler reports an error.
 func (p *parser) parse() error {
-	switch {
-	case isComment(p):
-		_, err := parseComment(p) // drop comments
-		return err
-	case isPredicate(p):
-		pred, err := parsePredicate(p)
-		if err != nil {
-			return err
+	for p.lookAhead(0).Type != tok.EOF {
+		switch {
+		case isComment(p):
+			_, err := parseComment(p) // drop comments
+			if err != nil {
+				return err
+			}
+		case isPredicate(p):
+			pred, err := parsePredicate(p)
+			if err != nil {
+				return err
+			}
+			if err := p.handler.AddPredicate(pred); err != nil {
+				return err
+			}
+		case isParamDeclaration(p):
+			param, err := parseParamDeclaration(p)
+			if err != nil {
+				return err
+			}
+			if err := p.handler.AddParamDeclaration(param); err != nil {
+				return err
+			}
+		case isVarDeclaration(p):
+			v, err := parseVarDeclaration(p)
+			if err != nil {
+				return err
+			}
+			if err := p.handler.AddVarDeclaration(v); err != nil {
+				return err
+			}
+		case isConstraint(p):
+			c, err := parseConstraint(p)
+			if err != nil {
+				return err
+			}
+			if err := p.handler.AddConstraint(c); err != nil {
+				return err
+			}
+		case isSolveGoal(p):
+			s, err := parseSolveGoal(p)
+			if err != nil {
+				return err
+			}
+			if err := p.handler.AddSolveGoal(s); err != nil {
+				return err
+			}
+		default:
+			return fmt.Errorf("unrecognized instruction")
 		}
-		return p.handler.AddPredicate(pred)
-	case isParamDeclaration(p):
-		param, err := parseParamDeclaration(p)
-		if err != nil {
-			return err
-		}
-		return p.handler.AddParamDeclaration(param)
-	case isVarDeclaration(p):
-		v, err := parseVarDeclaration(p)
-		if err != nil {
-			return err
-		}
-		return p.handler.AddVarDeclaration(v)
-	case isConstraint(p):
-		c, err := parseConstraint(p)
-		if err != nil {
-			return err
-		}
-		return p.handler.AddConstraint(c)
-	case isSolveGoal(p):
-		s, err := parseSolveGoal(p)
-		if err != nil {
-			return err
-		}
-		return p.handler.AddSolveGoal(s)
-	default:
-		return fmt.Errorf("unrecognized instruction")
 	}
+
+	return nil
 }

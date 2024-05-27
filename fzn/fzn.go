@@ -59,10 +59,6 @@ func Parse(reader io.Reader, handler Handler) error {
 		i++
 
 		line := scanner.Text()
-		if line == "" { // TODO: this should ideally be done in the parser itself
-			continue
-		}
-
 		tokens, err := tokenizer.Tokenize(line)
 		if err != nil {
 			return fmt.Errorf("tokenizer error at line %d: %w", i, err)

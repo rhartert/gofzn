@@ -9,19 +9,11 @@ import (
 	"github.com/rhartert/ptr"
 )
 
-var testCakesFZN = `
-array [1..2] of int: X_INTRODUCED_2_ = [250,200];
-array [1..2] of int: X_INTRODUCED_6_ = [75,150];
-array [1..2] of int: X_INTRODUCED_8_ = [100,150];
-var 0..3: b:: output_var;
-var 0..6: c:: output_var;
-var 0..85000: X_INTRODUCED_0_:: is_defined_var;
-constraint int_lin_le(X_INTRODUCED_2_,[b,c],4000);
-constraint int_lin_le(X_INTRODUCED_6_,[b,c],2000);
-constraint int_lin_le(X_INTRODUCED_8_,[b,c],500);
-constraint int_lin_eq([400,450,-1],[b,c,X_INTRODUCED_0_],0):: ctx_pos:: defines_var(X_INTRODUCED_0_);
-solve  maximize X_INTRODUCED_0_;
-`
+//go:embed testdata/cakes.fzn
+var testCakesFZN string
+
+//go:embed testdata/cakes_inline.fzn
+var testCakesFZNInline string
 
 var testCakesModel = Model{
 	ParamDeclarations: []ParamDeclaration{
@@ -143,6 +135,11 @@ func TestParseModel(t *testing.T) {
 		{
 			desc:  "cakes.fzn",
 			input: testCakesFZN,
+			want:  &testCakesModel,
+		},
+		{
+			desc:  "cakes_inline.fzn",
+			input: testCakesFZNInline,
 			want:  &testCakesModel,
 		},
 	}
