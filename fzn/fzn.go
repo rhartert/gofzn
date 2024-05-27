@@ -21,9 +21,8 @@ type Model struct {
 // ParseModel reads a FlatZinc model from the provided reader and returns a
 // fully constructed Model.
 //
-// The function does not verify that the model is valid. For example, it does
-// not verify that variable domains are valid or that referenced entities have
-// been declared.
+// This function only checks for syntactic correctness and does not verify
+// that the Model is semantically correct. See [Parse] for details.
 func ParseModel(reader io.Reader) (*Model, error) {
 	mb := &modelBuilder{}
 	if err := Parse(reader, mb); err != nil {
@@ -32,25 +31,30 @@ func ParseModel(reader io.Reader) (*Model, error) {
 	return &mb.Model, nil
 }
 
-// Handler is an interface that clients must implement to handle the parsed
-// components of a FlatZinc model.
+// Handler is an interface that works with the parser (see [Parse]) to handle
+// parsed FlatZinc model components such as predicates, parameters, variables,
+// constraints, and solve goals. Implementations of this interface define how
+// these parsed components should be processed.
 type Handler interface {
-	AddPredicate(p *Predicate) error
-	AddParamDeclaration(p *ParamDeclaration) error
-	AddVarDeclaration(v *VarDeclaration) error
-	AddConstraint(c *Constraint) error
-	AddSolveGoal(s *SolveGoal) error
+	HandlePredicate(p *Predicate) error
+	HandleParamDeclaration(p *ParamDeclaration) error
+	HandleVarDeclaration(v *VarDeclaration) error
+	HandleConstraint(c *Constraint) error
+	HandleSolveGoal(s *SolveGoal) error
 }
 
 // Parse parses an FZN model from the provided reader, invoking the handler
-// functions during the parsing process. The parser stops and returns an error
-// if the model is syntactically incorrect or if the handler returns an error.
+// functions during the parsing process. It stops and returns an error if the
+// model is syntactically incorrect or if the handler returns an error.
 //
 // This function only checks for syntactic correctness and does not verify
 // semantic correctness. For instance, the following instruction defines a
 // variable with an invalid domain but will still be parsed successfully:
 //
 //	var 10..0: X; // semantically invalid domain
+//
+// It is the responsibility of the Handler's implementation to validate the
+// model's semantic to meet its need.
 func Parse(reader io.Reader, handler Handler) error {
 	tokenizer := tok.Tokenizer{}
 	scanner := bufio.NewScanner(reader)
@@ -81,27 +85,27 @@ type modelBuilder struct {
 	Model Model
 }
 
-func (mb *modelBuilder) AddPredicate(p *Predicate) error {
+func (mb *modelBuilder) HandlePredicate(p *Predicate) error {
 	mb.Model.Predicates = append(mb.Model.Predicates, *p)
 	return nil
 }
 
-func (mb *modelBuilder) AddParamDeclaration(p *ParamDeclaration) error {
+func (mb *modelBuilder) HandleParamDeclaration(p *ParamDeclaration) error {
 	mb.Model.ParamDeclarations = append(mb.Model.ParamDeclarations, *p)
 	return nil
 }
 
-func (mb *modelBuilder) AddVarDeclaration(v *VarDeclaration) error {
+func (mb *modelBuilder) HandleVarDeclaration(v *VarDeclaration) error {
 	mb.Model.VarDeclarations = append(mb.Model.VarDeclarations, *v)
 	return nil
 }
 
-func (mb *modelBuilder) AddConstraint(c *Constraint) error {
+func (mb *modelBuilder) HandleConstraint(c *Constraint) error {
 	mb.Model.Constraints = append(mb.Model.Constraints, *c)
 	return nil
 }
 
-func (mb *modelBuilder) AddSolveGoal(s *SolveGoal) error {
+func (mb *modelBuilder) HandleSolveGoal(s *SolveGoal) error {
 	mb.Model.SolveGoals = append(mb.Model.SolveGoals, *s)
 	return nil
 }

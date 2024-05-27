@@ -71,7 +71,7 @@ func (p *parser) parse() error {
 			if err != nil {
 				return err
 			}
-			if err := p.handler.AddPredicate(pred); err != nil {
+			if err := p.handler.HandlePredicate(pred); err != nil {
 				return err
 			}
 		case isParamDeclaration(p):
@@ -79,7 +79,7 @@ func (p *parser) parse() error {
 			if err != nil {
 				return err
 			}
-			if err := p.handler.AddParamDeclaration(param); err != nil {
+			if err := p.handler.HandleParamDeclaration(param); err != nil {
 				return err
 			}
 		case isVarDeclaration(p):
@@ -87,7 +87,7 @@ func (p *parser) parse() error {
 			if err != nil {
 				return err
 			}
-			if err := p.handler.AddVarDeclaration(v); err != nil {
+			if err := p.handler.HandleVarDeclaration(v); err != nil {
 				return err
 			}
 		case isConstraint(p):
@@ -95,7 +95,7 @@ func (p *parser) parse() error {
 			if err != nil {
 				return err
 			}
-			if err := p.handler.AddConstraint(c); err != nil {
+			if err := p.handler.HandleConstraint(c); err != nil {
 				return err
 			}
 		case isSolveGoal(p):
@@ -103,7 +103,7 @@ func (p *parser) parse() error {
 			if err != nil {
 				return err
 			}
-			if err := p.handler.AddSolveGoal(s); err != nil {
+			if err := p.handler.HandleSolveGoal(s); err != nil {
 				return err
 			}
 		default:

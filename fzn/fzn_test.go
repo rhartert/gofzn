@@ -21,27 +21,27 @@ type instruction struct {
 	SolveGoal        *SolveGoal
 }
 
-func (i *instruction) AddPredicate(p *Predicate) error {
+func (i *instruction) HandlePredicate(p *Predicate) error {
 	i.Predicate = p
 	return nil
 }
 
-func (i *instruction) AddParamDeclaration(p *ParamDeclaration) error {
+func (i *instruction) HandleParamDeclaration(p *ParamDeclaration) error {
 	i.ParamDeclaration = p
 	return nil
 }
 
-func (i *instruction) AddVarDeclaration(v *VarDeclaration) error {
+func (i *instruction) HandleVarDeclaration(v *VarDeclaration) error {
 	i.VarDeclaration = v
 	return nil
 }
 
-func (i *instruction) AddConstraint(c *Constraint) error {
+func (i *instruction) HandleConstraint(c *Constraint) error {
 	i.Constraint = c
 	return nil
 }
 
-func (i *instruction) AddSolveGoal(sg *SolveGoal) error {
+func (i *instruction) HandleSolveGoal(sg *SolveGoal) error {
 	i.SolveGoal = sg
 	return nil
 }
