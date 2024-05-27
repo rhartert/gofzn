@@ -427,6 +427,10 @@ func TestParse_solveGoal(t *testing.T) {
 			wantErr: true,
 		},
 		{
+			input:   "solve minimize OBJ_VAR",
+			wantErr: true,
+		},
+		{
 			input: "solve satisfy;",
 			want: instruction{
 				SolveGoal: &SolveGoal{

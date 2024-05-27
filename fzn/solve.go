@@ -58,6 +58,10 @@ func parseSolveGoal(p *parser) (*SolveGoal, error) {
 		return nil, fmt.Errorf("error parsing solve objective: %w", err)
 	}
 
+	if !p.nextIf(tok.EOI) {
+		return nil, fmt.Errorf("missing end of instruction")
+	}
+
 	sg.Objective = expr
 	return sg, nil
 }
