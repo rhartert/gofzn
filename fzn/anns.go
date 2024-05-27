@@ -32,13 +32,13 @@ func parseAnnotation(p *parser) (Annotation, error) {
 		return a, nil
 	}
 
-	a.Exprs = make([][]AnnExpr, 0, 8)
+	a.Parameters = make([][]AnnParam, 0, 8)
 	for !p.nextIf(tok.TupleEnd) {
-		ae, err := parseAnnExpr(p)
+		ae, err := parseAnnParams(p)
 		if err != nil {
 			return Annotation{}, err
 		}
-		a.Exprs = append(a.Exprs, ae)
+		a.Parameters = append(a.Parameters, ae)
 
 		if !p.nextIf(tok.Comma) && p.lookAhead(0).Type != tok.TupleEnd {
 			return Annotation{}, fmt.Errorf("missing comma")
@@ -48,18 +48,18 @@ func parseAnnotation(p *parser) (Annotation, error) {
 	return a, nil
 }
 
-func parseAnnExpr(p *parser) ([]AnnExpr, error) {
+func parseAnnParams(p *parser) ([]AnnParam, error) {
 	if !p.nextIf(tok.ArrayStart) {
-		ae, err := basicAnnExpr(p)
+		ae, err := parseAnnParam(p)
 		if err != nil {
 			return nil, err
 		}
-		return []AnnExpr{*ae}, nil
+		return []AnnParam{*ae}, nil
 	}
 
-	aes := []AnnExpr{}
+	aes := []AnnParam{}
 	for !p.nextIf(tok.ArrayEnd) {
-		ae, err := basicAnnExpr(p)
+		ae, err := parseAnnParam(p)
 		if err != nil {
 			return nil, err
 		}
@@ -73,33 +73,33 @@ func parseAnnExpr(p *parser) ([]AnnExpr, error) {
 	return aes, nil
 }
 
-func basicAnnExpr(p *parser) (*AnnExpr, error) {
+func parseAnnParam(p *parser) (*AnnParam, error) {
 	switch {
 	case isLiteral(p):
 		ble, err := parseLiteral(p)
 		if err != nil {
 			return nil, err
 		}
-		return &AnnExpr{Literal: &ble}, nil
+		return &AnnParam{Literal: &ble}, nil
 	case isIdentifier(p):
 		if p.lookAhead(1).Type == tok.TupleStart {
 			a, err := parseAnnotation(p)
 			if err != nil {
 				return nil, err
 			}
-			return &AnnExpr{Annotation: &a}, nil
+			return &AnnParam{Annotation: &a}, nil
 		}
 		id, err := parseIdentifier(p)
 		if err != nil {
 			return nil, err
 		}
-		return &AnnExpr{VarID: &id}, nil
+		return &AnnParam{VarID: &id}, nil
 	case isStringLit(p):
 		sl, err := parseStringLit(p)
 		if err == nil {
 			return nil, err
 		}
-		return &AnnExpr{StringLit: &sl}, nil
+		return &AnnParam{StringLit: &sl}, nil
 	default:
 		return nil, fmt.Errorf("unknown basicAnnExpr: %s", p.lookAhead(0))
 	}

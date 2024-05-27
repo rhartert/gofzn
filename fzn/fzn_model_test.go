@@ -115,7 +115,7 @@ var testCakesModel = Model{
 			},
 			Annotations: []Annotation{
 				{Identifier: "ctx_pos"},
-				{Identifier: "defines_var", Exprs: [][]AnnExpr{
+				{Identifier: "defines_var", Parameters: [][]AnnParam{
 					{{VarID: ptr.Of("X_INTRODUCED_0_")}},
 				}},
 			},

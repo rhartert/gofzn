@@ -70,12 +70,16 @@ type SolveGoal struct {
 	Annotations []Annotation
 }
 
+// Annotation represents an annotation which is an identifier or a function call
+// with a list of lists of parameters.
 type Annotation struct {
 	Identifier string
-	Exprs      [][]AnnExpr
+	Parameters [][]AnnParam
 }
 
-type AnnExpr struct {
+// AnnParam represents an Annotation parameter. It can either be a Literal, a
+// variable identifier, a string literal or nested annotation.
+type AnnParam struct {
 	Literal    *Literal
 	VarID      *string
 	StringLit  *string
