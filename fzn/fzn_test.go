@@ -64,6 +64,15 @@ func TestParse_invalidReader(t *testing.T) {
 	}
 }
 
+func TestParse_invalidRunes(t *testing.T) {
+	testParse(t, []testCase{
+		{
+			input:   "!@--->",
+			wantErr: true,
+		},
+	})
+}
+
 func TestParse_comment(t *testing.T) {
 	testParse(t, []testCase{
 		{
