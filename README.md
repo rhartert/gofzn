@@ -4,8 +4,10 @@
 [![Go Report Card](https://goreportcard.com/badge/github.com/rhartert/gofzn)](https://goreportcard.com/report/github.com/rhartert/gofzn)
 [![Tests](https://github.com/rhartert/gofzn/actions/workflows/test.yml/badge.svg)](https://github.com/rhartert/gofzn/actions/workflows/test.yml)
 
-GoFZN is a parser for FlatZinc models written in Golang. The project has been
-motivated by the absence of FlatZinc parser in Go.
+GoFZN is a parser for FlatZinc models written in Go. The goal of this project is 
+to foster the development of new constraint solvers in Go by providing 
+researchers and constraint programming practitioners with a convenient way to 
+interface their solvers with MiniZinc.
 
 GoFZN is a [recursive descent parser] with a structure that closely mirrors the 
 FlatZinc grammar. GoFZN has been entirely handwritten and does not rely on 
