@@ -1,7 +1,15 @@
 package fzn
 
 type Predicate struct {
-	Value string
+	Identifier string
+	Parameters []PredParam
+}
+
+type PredParam struct {
+	Identifier string
+	Array      *Array
+	VarType    VarType
+	ParType    ParType
 }
 
 type ParamDeclaration struct {

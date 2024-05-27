@@ -93,9 +93,89 @@ func TestParse_comment(t *testing.T) {
 func TestParse_predicate(t *testing.T) {
 	testParse(t, []testCase{
 		{
-			input: "predicate foo(int)",
+			input:   "predicate;",
+			wantErr: true,
+		},
+		{
+			input:   "predicate foo;",
+			wantErr: true,
+		},
+		{
+			input:   "predicate foo(int)",
+			wantErr: true,
+		},
+		{
+			input:   "predicate (int);",
+			wantErr: true,
+		},
+		{
+			input:   "predicate foo int : X;",
+			wantErr: true,
+		},
+		{
+			input:   "predicate (int : X);",
+			wantErr: true,
+		},
+		{
+			input:   "predicate foo(set : X);",
+			wantErr: true,
+		},
+		{
+			input:   "predicate foo(var var : X);",
+			wantErr: true,
+		},
+		{
+			input:   "predicate foo(array of int : X);",
+			wantErr: true,
+		},
+		{
+			input:   "predicate foo(int: A)",
+			wantErr: true,
+		},
+		{
+			input:   "predicate foo(int: int)",
+			wantErr: true,
+		},
+		{
+			input:   "predicate foo(bool: A int: B float: C);",
+			wantErr: true,
+		},
+		{
+			input: "predicate foo(int: A);",
 			want: instruction{
-				Predicate: &Predicate{Value: "predicate foo ( int )"},
+				Predicate: &Predicate{
+					Identifier: "foo",
+					Parameters: []PredParam{
+						{Identifier: "A", ParType: ParTypeInt},
+					},
+				},
+			},
+		},
+		{
+			input: "predicate foo(bool: A, int: B, float: C, var int: X);",
+			want: instruction{
+				Predicate: &Predicate{
+					Identifier: "foo",
+					Parameters: []PredParam{
+						{Identifier: "A", ParType: ParTypeBool},
+						{Identifier: "B", ParType: ParTypeInt},
+						{Identifier: "C", ParType: ParTypeFloat},
+						{Identifier: "X", VarType: VarTypeIntRange},
+					},
+				},
+			},
+		},
+		{
+			input: "predicate foo(array [1..10] of var float: X);",
+			want: instruction{
+				Predicate: &Predicate{
+					Identifier: "foo",
+					Parameters: []PredParam{{
+						Identifier: "X",
+						Array:      &Array{1, 10},
+						VarType:    VarTypeFloatRange,
+					}},
+				},
 			},
 		},
 	})
