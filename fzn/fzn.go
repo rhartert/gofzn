@@ -11,11 +11,11 @@ import (
 
 // Model represents a FlatZinc model.
 type Model struct {
-	Predicates  []Predicate
-	Parameters  []Parameter
-	Variables   []Variable
-	Constraints []Constraint
-	SolveGoals  []SolveGoal
+	Predicates        []Predicate
+	ParamDeclarations []ParamDeclaration
+	VarDeclarations   []VarDeclaration
+	Constraints       []Constraint
+	SolveGoals        []SolveGoal
 }
 
 // ParseModel reads a FlatZinc model from the provided reader and returns a
@@ -36,8 +36,8 @@ func ParseModel(reader io.Reader) (*Model, error) {
 // components of a FlatZinc model.
 type Handler interface {
 	AddPredicate(p *Predicate) error
-	AddParameter(p *Parameter) error
-	AddVariable(v *Variable) error
+	AddParamDeclaration(p *ParamDeclaration) error
+	AddVarDeclaration(v *VarDeclaration) error
 	AddConstraint(c *Constraint) error
 	AddSolveGoal(s *SolveGoal) error
 }
@@ -89,13 +89,13 @@ func (mb *modelBuilder) AddPredicate(p *Predicate) error {
 	return nil
 }
 
-func (mb *modelBuilder) AddParameter(p *Parameter) error {
-	mb.Model.Parameters = append(mb.Model.Parameters, *p)
+func (mb *modelBuilder) AddParamDeclaration(p *ParamDeclaration) error {
+	mb.Model.ParamDeclarations = append(mb.Model.ParamDeclarations, *p)
 	return nil
 }
 
-func (mb *modelBuilder) AddVariable(v *Variable) error {
-	mb.Model.Variables = append(mb.Model.Variables, *v)
+func (mb *modelBuilder) AddVarDeclaration(v *VarDeclaration) error {
+	mb.Model.VarDeclarations = append(mb.Model.VarDeclarations, *v)
 	return nil
 }
 

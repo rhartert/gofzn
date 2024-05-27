@@ -24,12 +24,12 @@ solve  maximize X_INTRODUCED_0_;
 `
 
 var testCakesModel = Model{
-	Parameters: []Parameter{
+	ParamDeclarations: []ParamDeclaration{
 		{
 			Identifier: "X_INTRODUCED_2_",
 			Array:      &Array{Start: 1, End: 2},
 			Type:       ParTypeInt,
-			Exprs: []Literal{
+			Literals: []Literal{
 				{Int: ptr.Of(250)},
 				{Int: ptr.Of(200)},
 			},
@@ -38,7 +38,7 @@ var testCakesModel = Model{
 			Identifier: "X_INTRODUCED_6_",
 			Array:      &Array{Start: 1, End: 2},
 			Type:       ParTypeInt,
-			Exprs: []Literal{
+			Literals: []Literal{
 				{Int: ptr.Of(75)},
 				{Int: ptr.Of(150)},
 			},
@@ -47,29 +47,35 @@ var testCakesModel = Model{
 			Identifier: "X_INTRODUCED_8_",
 			Array:      &Array{Start: 1, End: 2},
 			Type:       ParTypeInt,
-			Exprs: []Literal{
+			Literals: []Literal{
 				{Int: ptr.Of(100)},
 				{Int: ptr.Of(150)},
 			},
 		},
 	},
-	Variables: []Variable{
+	VarDeclarations: []VarDeclaration{
 		{
-			Identifier:  "b",
-			Type:        VarTypeIntRange,
-			Domain:      VarDomain{IntDomain: &SetIntLit{Values: [][]int{{0, 3}}}},
+			Identifier: "b",
+			Variable: Variable{
+				Type:      VarTypeIntRange,
+				IntDomain: &SetIntLit{Values: [][]int{{0, 3}}},
+			},
 			Annotations: []Annotation{{Identifier: "output_var"}},
 		},
 		{
-			Identifier:  "c",
-			Type:        VarTypeIntRange,
-			Domain:      VarDomain{IntDomain: &SetIntLit{Values: [][]int{{0, 6}}}},
+			Identifier: "c",
+			Variable: Variable{
+				Type:      VarTypeIntRange,
+				IntDomain: &SetIntLit{Values: [][]int{{0, 6}}},
+			},
 			Annotations: []Annotation{{Identifier: "output_var"}},
 		},
 		{
-			Identifier:  "X_INTRODUCED_0_",
-			Type:        VarTypeIntRange,
-			Domain:      VarDomain{IntDomain: &SetIntLit{Values: [][]int{{0, 85000}}}},
+			Identifier: "X_INTRODUCED_0_",
+			Variable: Variable{
+				Type:      VarTypeIntRange,
+				IntDomain: &SetIntLit{Values: [][]int{{0, 85000}}},
+			},
 			Annotations: []Annotation{{Identifier: "is_defined_var"}},
 		},
 	},

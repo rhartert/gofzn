@@ -14,11 +14,11 @@ import (
 // instruction implements the Handler interface and serves as a convenient way
 // to compare parsed instructions.
 type instruction struct {
-	Predicate  *Predicate
-	Parameter  *Parameter
-	Variable   *Variable
-	Constraint *Constraint
-	SolveGoal  *SolveGoal
+	Predicate        *Predicate
+	ParamDeclaration *ParamDeclaration
+	VarDeclaration   *VarDeclaration
+	Constraint       *Constraint
+	SolveGoal        *SolveGoal
 }
 
 func (i *instruction) AddPredicate(p *Predicate) error {
@@ -26,13 +26,13 @@ func (i *instruction) AddPredicate(p *Predicate) error {
 	return nil
 }
 
-func (i *instruction) AddParameter(p *Parameter) error {
-	i.Parameter = p
+func (i *instruction) AddParamDeclaration(p *ParamDeclaration) error {
+	i.ParamDeclaration = p
 	return nil
 }
 
-func (i *instruction) AddVariable(v *Variable) error {
-	i.Variable = v
+func (i *instruction) AddVarDeclaration(v *VarDeclaration) error {
+	i.VarDeclaration = v
 	return nil
 }
 
@@ -134,40 +134,40 @@ func TestParse_parameter(t *testing.T) {
 		{
 			input: "int: foo = 42;",
 			want: instruction{
-				Parameter: &Parameter{
+				ParamDeclaration: &ParamDeclaration{
 					Identifier: "foo",
 					Type:       ParTypeInt,
-					Exprs:      []Literal{{Int: ptr.Of(42)}},
+					Literals:   []Literal{{Int: ptr.Of(42)}},
 				},
 			},
 		},
 		{
 			input: "bool: foo = true;",
 			want: instruction{
-				Parameter: &Parameter{
+				ParamDeclaration: &ParamDeclaration{
 					Identifier: "foo",
 					Type:       ParTypeBool,
-					Exprs:      []Literal{{Bool: ptr.Of(true)}},
+					Literals:   []Literal{{Bool: ptr.Of(true)}},
 				},
 			},
 		},
 		{
 			input: "float: foo = 42.0;",
 			want: instruction{
-				Parameter: &Parameter{
+				ParamDeclaration: &ParamDeclaration{
 					Identifier: "foo",
 					Type:       ParTypeFloat,
-					Exprs:      []Literal{{Float: ptr.Of(42.0)}},
+					Literals:   []Literal{{Float: ptr.Of(42.0)}},
 				},
 			},
 		},
 		{
 			input: "set of int: foo = {42, 44, 45};",
 			want: instruction{
-				Parameter: &Parameter{
+				ParamDeclaration: &ParamDeclaration{
 					Identifier: "foo",
 					Type:       ParTypeSetOfInt,
-					Exprs: []Literal{{SetInt: &SetIntLit{
+					Literals: []Literal{{SetInt: &SetIntLit{
 						Values: [][]int{{42, 42}, {44, 45}},
 					}}},
 				},
@@ -176,11 +176,11 @@ func TestParse_parameter(t *testing.T) {
 		{
 			input: "array [1..2] of int: foo = [42, 1337];",
 			want: instruction{
-				Parameter: &Parameter{
+				ParamDeclaration: &ParamDeclaration{
 					Identifier: "foo",
 					Type:       ParTypeInt,
 					Array:      &Array{1, 2},
-					Exprs: []Literal{
+					Literals: []Literal{
 						{Int: ptr.Of(42)},
 						{Int: ptr.Of(1337)},
 					},
@@ -215,20 +215,22 @@ func TestParse_variables(t *testing.T) {
 		{
 			input: "var int: X;",
 			want: instruction{
-				Variable: &Variable{
+				VarDeclaration: &VarDeclaration{
 					Identifier: "X",
-					Type:       VarTypeIntRange,
-					Domain:     VarDomain{},
+					Variable: Variable{
+						Type: VarTypeIntRange,
+					},
 				},
 			},
 		},
 		{
 			input: "var int : X ::foo;",
 			want: instruction{
-				Variable: &Variable{
-					Identifier:  "X",
-					Type:        VarTypeIntRange,
-					Domain:      VarDomain{},
+				VarDeclaration: &VarDeclaration{
+					Identifier: "X",
+					Variable: Variable{
+						Type: VarTypeIntRange,
+					},
 					Annotations: []Annotation{{Identifier: "foo"}},
 				},
 			},
@@ -236,72 +238,84 @@ func TestParse_variables(t *testing.T) {
 		{
 			input: "var 1..5: X;",
 			want: instruction{
-				Variable: &Variable{
+				VarDeclaration: &VarDeclaration{
 					Identifier: "X",
-					Type:       VarTypeIntRange,
-					Domain:     VarDomain{IntDomain: &SetIntLit{Values: [][]int{{1, 5}}}},
+					Variable: Variable{
+						Type:      VarTypeIntRange,
+						IntDomain: &SetIntLit{Values: [][]int{{1, 5}}},
+					},
 				},
 			},
 		},
 		{
 			input: "var 0.1..0.5: X;",
 			want: instruction{
-				Variable: &Variable{
+				VarDeclaration: &VarDeclaration{
 					Identifier: "X",
-					Type:       VarTypeFloatRange,
-					Domain:     VarDomain{FloatDomain: &SetFloatLit{Values: [][]float64{{0.1, 0.5}}}},
+					Variable: Variable{
+						Type:        VarTypeFloatRange,
+						FloatDomain: &SetFloatLit{Values: [][]float64{{0.1, 0.5}}},
+					},
 				},
 			},
 		},
 		{
 			input: "var {1, 3}: X;",
 			want: instruction{
-				Variable: &Variable{
+				VarDeclaration: &VarDeclaration{
 					Identifier: "X",
-					Type:       VarTypeIntSet,
-					Domain:     VarDomain{IntDomain: &SetIntLit{Values: [][]int{{1, 1}, {3, 3}}}},
+					Variable: Variable{
+						Type:      VarTypeIntSet,
+						IntDomain: &SetIntLit{Values: [][]int{{1, 1}, {3, 3}}},
+					},
 				},
 			},
 		},
 		{
 			input: "var set of 1..3: X;",
 			want: instruction{
-				Variable: &Variable{
+				VarDeclaration: &VarDeclaration{
 					Identifier: "X",
-					Type:       VarTypeIntSet,
-					Domain:     VarDomain{IntDomain: &SetIntLit{Values: [][]int{{1, 3}}}},
+					Variable: Variable{
+						Type:      VarTypeIntSet,
+						IntDomain: &SetIntLit{Values: [][]int{{1, 3}}},
+					},
 				},
 			},
 		},
 		{
 			input: "var set of {1, 3} : X;",
 			want: instruction{
-				Variable: &Variable{
+				VarDeclaration: &VarDeclaration{
 					Identifier: "X",
-					Type:       VarTypeIntSet,
-					Domain:     VarDomain{IntDomain: &SetIntLit{Values: [][]int{{1, 1}, {3, 3}}}},
+					Variable: Variable{
+						Type:      VarTypeIntSet,
+						IntDomain: &SetIntLit{Values: [][]int{{1, 1}, {3, 3}}},
+					},
 				},
 			},
 		},
 		{
 			input: "array [1..2] of var int: X;",
 			want: instruction{
-				Variable: &Variable{
+				VarDeclaration: &VarDeclaration{
 					Identifier: "X",
-					Type:       VarTypeIntRange,
-					Array:      &Array{1, 2},
-					Domain:     VarDomain{},
+					Variable: Variable{
+						Type: VarTypeIntRange,
+					},
+					Array: &Array{1, 2},
 				},
 			},
 		},
 		{
 			input: "array [1..2] of var int: X = [foo, bar];",
 			want: instruction{
-				Variable: &Variable{
+				VarDeclaration: &VarDeclaration{
 					Identifier: "X",
-					Type:       VarTypeIntRange,
-					Array:      &Array{1, 2},
-					Domain:     VarDomain{},
+					Variable: Variable{
+						Type: VarTypeIntRange,
+					},
+					Array: &Array{1, 2},
 					Exprs: []BasicExpr{
 						{Identifier: "foo"},
 						{Identifier: "bar"},

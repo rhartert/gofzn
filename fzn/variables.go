@@ -6,7 +6,7 @@ import (
 	"github.com/rhartert/gofzn/fzn/tok"
 )
 
-func isVariable(p *parser) bool {
+func isVarDeclaration(p *parser) bool {
 	switch p.lookAhead(0).Type {
 	case tok.Var:
 		return true
@@ -17,8 +17,8 @@ func isVariable(p *parser) bool {
 	}
 }
 
-func parseVariable(p *parser) (v *Variable, err error) {
-	v = &Variable{}
+func parseVarDeclaration(p *parser) (v *VarDeclaration, err error) {
+	v = &VarDeclaration{}
 
 	if p.lookAhead(0).Type == tok.Array {
 		v.Array, err = parseArrayOf(p)
@@ -27,7 +27,7 @@ func parseVariable(p *parser) (v *Variable, err error) {
 		}
 	}
 
-	v.Domain, v.Type, err = parseBasicVarType(p)
+	v.Variable, err = parseVariable(p)
 	if err != nil {
 		return nil, err
 	}
@@ -68,54 +68,60 @@ func parseVariable(p *parser) (v *Variable, err error) {
 //	                   | "var" "{" <int-literal> "," ... "}"
 //	                   | "var" "set" "of" <int-literal> ".." <int-literal>
 //	                   | "var" "set" "of" "{" [ <int-literal> "," ... ] "}"
-func parseBasicVarType(p *parser) (VarDomain, VarType, error) {
+func parseVariable(p *parser) (Variable, error) {
 	if !p.nextIf(tok.Var) {
-		return VarDomain{}, VarTypeUnknown, fmt.Errorf("shoud start with var")
+		return Variable{}, fmt.Errorf("shoud start with var")
 	}
 
 	switch t := p.lookAhead(0); t.Type {
 	case tok.BoolType:
 		p.next()
-		return VarDomain{}, VarTypeBool, nil
+		return Variable{Type: VarTypeBool}, nil
 	case tok.IntType:
 		p.next()
-		return VarDomain{}, VarTypeIntRange, nil
+		return Variable{Type: VarTypeIntRange}, nil
 	case tok.FloatType:
 		p.next()
-		return VarDomain{}, VarTypeFloatRange, nil
+		return Variable{Type: VarTypeFloatRange}, nil
 	case tok.FloatLit:
 		r, err := parseFloatRange(p)
 		if err != nil {
-			return VarDomain{}, VarTypeUnknown, err
+			return Variable{}, err
 		}
-		return toFloatDomain(r), VarTypeFloatRange, nil
+		return toFloatDomain(r), nil
 	case tok.IntLit:
 		r, err := parseIntRange(p)
 		if err != nil {
-			return VarDomain{}, VarTypeUnknown, err
+			return Variable{}, err
 		}
-		return toIntDomain(r), VarTypeIntRange, nil
+		return toIntDomain(r), nil
 	case tok.SetStart:
 		is, err := parseSetIntLit(p)
 		if err != nil {
-			return VarDomain{}, VarTypeUnknown, err
+			return Variable{}, err
 		}
-		return VarDomain{IntDomain: &is}, VarTypeIntSet, nil
+		return Variable{Type: VarTypeIntSet, IntDomain: &is}, nil
 	case tok.Set:
 		is, err := parseSetOfInt(p)
 		if err != nil {
-			return VarDomain{}, VarTypeUnknown, err
+			return Variable{}, err
 		}
-		return VarDomain{IntDomain: &is}, VarTypeIntSet, nil
+		return Variable{Type: VarTypeIntSet, IntDomain: &is}, nil
 	default:
-		return VarDomain{}, VarTypeUnknown, fmt.Errorf("invalid variable")
+		return Variable{}, fmt.Errorf("invalid variable")
 	}
 }
 
-func toFloatDomain(r rangeFloat) VarDomain {
-	return VarDomain{FloatDomain: &SetFloatLit{Values: [][]float64{{r.Min, r.Max}}}}
+func toFloatDomain(r rangeFloat) Variable {
+	return Variable{
+		Type:        VarTypeFloatRange,
+		FloatDomain: &SetFloatLit{Values: [][]float64{{r.Min, r.Max}}},
+	}
 }
 
-func toIntDomain(r rangeInt) VarDomain {
-	return VarDomain{IntDomain: &SetIntLit{Values: [][]int{{r.Min, r.Max}}}}
+func toIntDomain(r rangeInt) Variable {
+	return Variable{
+		Type:      VarTypeIntRange,
+		IntDomain: &SetIntLit{Values: [][]int{{r.Min, r.Max}}},
+	}
 }

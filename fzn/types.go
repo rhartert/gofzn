@@ -4,11 +4,11 @@ type Predicate struct {
 	Value string
 }
 
-type Parameter struct {
+type ParamDeclaration struct {
 	Identifier string
 	Type       ParType
 	Array      *Array
-	Exprs      []Literal
+	Literals   []Literal
 }
 
 type ParType int
@@ -21,13 +21,18 @@ const (
 	ParTypeSetOfInt
 )
 
-type Variable struct {
+type VarDeclaration struct {
 	Identifier  string
-	Type        VarType
-	Domain      VarDomain
+	Variable    Variable
 	Array       *Array
 	Annotations []Annotation
 	Exprs       []BasicExpr
+}
+
+type Variable struct {
+	Type        VarType
+	IntDomain   *SetIntLit
+	FloatDomain *SetFloatLit
 }
 
 type VarType int
@@ -39,11 +44,6 @@ const (
 	VarTypeFloatRange
 	VarTypeBool
 )
-
-type VarDomain struct {
-	IntDomain   *SetIntLit
-	FloatDomain *SetFloatLit
-}
 
 type Constraint struct {
 	Identifier  string

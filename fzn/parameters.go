@@ -19,7 +19,7 @@ import (
 //                     | "array" "[" <index-set> "]" "of" <basic-par-type>
 //
 
-func isParameter(p *parser) bool {
+func isParamDeclaration(p *parser) bool {
 	switch p.lookAhead(0).Type {
 	case tok.IntType:
 		return true
@@ -36,8 +36,8 @@ func isParameter(p *parser) bool {
 	}
 }
 
-func parseParameter(p *parser) (param *Parameter, err error) {
-	param = &Parameter{}
+func parseParamDeclaration(p *parser) (param *ParamDeclaration, err error) {
+	param = &ParamDeclaration{}
 
 	if p.lookAhead(0).Type == tok.Array {
 		param.Array, err = parseArrayOf(p)
@@ -64,7 +64,7 @@ func parseParameter(p *parser) (param *Parameter, err error) {
 		return nil, fmt.Errorf("missing assign")
 	}
 
-	param.Exprs, err = parseParamExpr(p)
+	param.Literals, err = parseParamExpr(p)
 	if err != nil {
 		return nil, fmt.Errorf("error parsing parameter expressions: %w", err)
 	}

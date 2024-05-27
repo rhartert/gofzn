@@ -68,18 +68,18 @@ func (p *parser) parse() error {
 			return err
 		}
 		return p.handler.AddPredicate(pred)
-	case isParameter(p):
-		param, err := parseParameter(p)
+	case isParamDeclaration(p):
+		param, err := parseParamDeclaration(p)
 		if err != nil {
 			return err
 		}
-		return p.handler.AddParameter(param)
-	case isVariable(p):
-		v, err := parseVariable(p)
+		return p.handler.AddParamDeclaration(param)
+	case isVarDeclaration(p):
+		v, err := parseVarDeclaration(p)
 		if err != nil {
 			return err
 		}
-		return p.handler.AddVariable(v)
+		return p.handler.AddVarDeclaration(v)
 	case isConstraint(p):
 		c, err := parseConstraint(p)
 		if err != nil {
