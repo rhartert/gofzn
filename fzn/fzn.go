@@ -42,14 +42,15 @@ type Handler interface {
 	AddSolveGoal(s *SolveGoal) error
 }
 
-// Parse parses an FZN model from the given reader, calling the handler
-// functions along the way. The parser stops and returns an error if the
-// handler returns an error.
+// Parse parses an FZN model from the provided reader, invoking the handler
+// functions during the parsing process. The parser stops and returns an error
+// if the model is syntactically incorrect or if the handler returns an error.
 //
-// The function does not verify that the model itself is valid. For example,
-// it does not verify that variable domains are consistent or that referenced
-// entities have been declared. It is the Handler's responsibility to perform
-// these verifications.
+// This function only checks for syntactic correctness and does not verify
+// semantic correctness. For instance, the following instruction defines a
+// variable with an invalid domain but will still be parsed successfully:
+//
+//	var 10..0: X; // semantically invalid domain
 func Parse(reader io.Reader, handler Handler) error {
 	tokenizer := tok.Tokenizer{}
 	scanner := bufio.NewScanner(reader)
