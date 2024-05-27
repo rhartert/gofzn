@@ -115,8 +115,8 @@ func (t *Tokenizer) backup() {
 	t.pos -= t.width
 }
 
-// trim skips all the following space runes until a non-space rune is found or
-// the end of t.input is reached
+// trim drops the current run and skips all the following space runes until a
+// non-space rune is found or the end of t.input is reached.
 func (t *Tokenizer) trim() {
 	for unicode.IsSpace(t.next()) {
 		t.start = t.pos // ignore the last rune
@@ -223,11 +223,22 @@ func tokenTypeFromRune(r rune) Type {
 	}
 }
 
-// tokenizeComment parses a Comment token made of the rest of the input.
+// tokenizeComment parses a Comment token made of all the incoming runes until
+// a new line rune is found.
 func tokenizeComment(t *Tokenizer) stateFn {
-	t.pos = len(t.input)
-	t.emit(Comment)
-	return tokenizeAnything
+	for {
+		r := t.next()
+		if r == eof {
+			t.emit(Comment)
+			return tokenizeAnything
+		}
+		if r == '\n' {
+			t.backup() // do not include the \n rune
+			t.emit(Comment)
+			t.trim() // drop the \n rune
+			return tokenizeAnything
+		}
+	}
 }
 
 // tokenizeAnnotation parses a AnnStart token.

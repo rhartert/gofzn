@@ -161,6 +161,10 @@ var testCases = []testCase{
 		input: "%% comment line; var :: solve : %&_@!",
 		want:  []Token{{Comment, "%% comment line; var :: solve : %&_@!"}},
 	},
+	{
+		input: "%% comment 1\n%% comment 2",
+		want:  []Token{{Comment, "%% comment 1"}, {Comment, "%% comment 2"}},
+	},
 
 	// Sample instructions.
 	{
