@@ -77,10 +77,10 @@ struct.
 ## Contributions
 
 Contributions are welcome! Please feel free to submit a pull request or open an 
-issue. Also, don't hesitate to reach out at [ren@ptrh.io] if you plan to use
+issue. Also, don't hesitate to reach out at [ren.hartert@gmail.com] if you plan to use
 this parser for your own project.
 
-[ren@ptrh.io]: mailto:ren@ptrh.io
+[ren.hartert@gmail.com]: mailto:ren.hartert@gmail.com
 [MiniZinc]: https://www.minizinc.org/
 [quite fun]: https://www.youtube.com/watch?v=HxaD_trXwRE
 [recursive descent parser]: https://en.wikipedia.org/wiki/Recursive_descent_parser
