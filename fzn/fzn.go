@@ -1,4 +1,4 @@
-// Package fzn contains functionality for parsing FlatZinc models.
+// Package fzn contains functionalities for parsing FlatZinc models.
 package fzn
 
 import (
@@ -49,8 +49,8 @@ type Handler interface {
 //
 // This function only checks for syntactic correctness and does not verify
 // that the model is semantically correct. For instance, the following
-// instruction will be parsed successfully despite defining a variable with an
-// invalid domain:
+// variable declaration will be parsed successfully despite having an invalid
+// domain:
 //
 //	var 10..0: X; // semantically invalid domain
 //
