@@ -79,7 +79,7 @@ func (t *Tokenizer) Tokenize(input string) ([]Token, error) {
 	// If a parsing error occurred, the last token will be an Error token with
 	// the error message as value.
 	if last := len(t.tokens) - 1; last >= 0 && t.tokens[last].Type == Error {
-		return nil, fmt.Errorf("Tokenizer error: %s", t.tokens[last].Value)
+		return nil, fmt.Errorf(t.tokens[last].Value)
 	}
 	return t.tokens, nil
 }
