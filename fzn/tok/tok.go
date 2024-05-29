@@ -16,38 +16,38 @@ type Type int
 
 const (
 	Error Type = iota
-	EOF
-	Comment
-	Of
-	IntLit
-	Identifier
-	Var
-	Array
-	Constraint
-	Predicate
-	Solve
-	Maximize
-	Minimize
-	BoolType
-	IntType
-	FloatType
-	Set
-	Range
-	Colon
-	SetStart
-	SetEnd
-	ArrayStart
-	ArrayEnd
-	TupleStart
-	TupleEnd
-	Comma
 	AnnStart
+	Array
+	ArrayEnd
+	ArrayStart
 	Assign
 	BoolLit
-	FloatLit
-	StringLit
-	Satisfy
+	BoolType
+	Colon
+	Comma
+	Comment
+	Constraint
+	EOF
 	EOI
+	FloatLit
+	FloatType
+	Identifier
+	IntLit
+	IntType
+	Maximize
+	Minimize
+	Of
+	Predicate
+	Range
+	Satisfy
+	Set
+	SetEnd
+	SetStart
+	Solve
+	StringLit
+	TupleEnd
+	TupleStart
+	Var
 )
 
 type Token struct {
