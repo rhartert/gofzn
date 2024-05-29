@@ -414,7 +414,7 @@ func tokenizeNumber(t *Tokenizer) stateFn {
 	if !t.accept(".") {
 		goto backtrackEmitInt
 	}
-	if digits != digitsDecimal { // FloatLit are decimal numbers
+	if digits != digitsDecimal { // FloatLit only contains decimal numbers
 		goto backtrackEmitInt
 	}
 	if !t.accept(digitsDecimal) {

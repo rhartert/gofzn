@@ -9,14 +9,9 @@ to foster the development of new constraint solvers in Go by providing
 researchers and constraint programming practitioners with a convenient way to 
 interface their solvers with MiniZinc.
 
-GoFZN is a [recursive descent parser] with a structure that closely mirrors the 
-FlatZinc grammar. GoFZN has been entirely handwritten and does not rely on 
-parser generators like YACC or Bison. Why you'd ask? Because writting tokenizers 
-and top-down parsers is actually [quite fun]! FlatZinc is a rather simple 
-language (in terms of grammar that is) and is well-suited for simple top-down 
-handwritten parsers. Having a handwritten tokenizer and parser also makes it 
-easy to adjust GoFZN (e.g. to grammar changes) while enabling high-quality
- error messages in case of syntax errors. 
+Under the hood, GoFZN is a handwritten [recursive descent parser] with a 
+structure that closely mirrors the FlatZinc grammar. Its tokenizer (or lexer) 
+is inspired by Rob Pike's talk [Lexical Scanning in Go]. 
 
 ## What's FlatZinc?
 
@@ -26,14 +21,6 @@ MiniZinc as the language humans use to write models, while FlatZinc serves as
 the language constraint solvers use to read and process these models.
 
 ## Usage
-
-### Installation
-
-To install the GoFZN library, simply use the following go get command:
-
-```bash
-go get github.com/rhartert/gofzn
-```
 
 ### Reading a FlatZinc Model
 
@@ -67,20 +54,29 @@ func main() {
 }
 ```
 
-Alternatively, you can interface your solver directly with GoFZN by providing 
-the `fzn.Parse` function with your own implementation of the `fzn.Handler`
-interface. This has two main advantages: (i) it allows you to use custom 
-validation rules for the declared entities, and (ii) it enables a slightly more 
-memory-efficient use of the library by avoiding the creation of the `fzn.Model` 
-struct.
+Note that GoFZN only takes care of verifying that components in the `fzn.Model` 
+are *syntactically* correct. For example, the following variable declaration 
+will be parsed succesfully despite having an inconsistent domain.
+
+```
+var 10..0: X; // domain is inconsistent
+```
+
+### Interfacing Directly with a Solver
+
+You can interface your solver directly with GoFZN by providing the `fzn.Parse` 
+function with your own implementation of the `fzn.Handler` interface. The main 
+advantage of this solution is that it completely removes the steps to build 
+the `fzn.Model` struct, thus enabling a slightly more efficient use of the 
+library.
 
 ## Contributions
 
 Contributions are welcome! Please feel free to submit a pull request or open an 
-issue. Also, don't hesitate to reach out at [ren.hartert@gmail.com] if you plan to use
-this parser for your own project.
+issue. Also, don't hesitate to reach out at [ren.hartert@gmail.com] if you plan 
+to use this parser for your own project.
 
 [ren.hartert@gmail.com]: mailto:ren.hartert@gmail.com
 [MiniZinc]: https://www.minizinc.org/
-[quite fun]: https://www.youtube.com/watch?v=HxaD_trXwRE
+[Lexical Scanning in Go]: https://www.youtube.com/watch?v=HxaD_trXwRE
 [recursive descent parser]: https://en.wikipedia.org/wiki/Recursive_descent_parser
