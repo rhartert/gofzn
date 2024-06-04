@@ -23,6 +23,8 @@ type ParamDeclaration struct {
 }
 
 // ParType represents the type of a parameter in FlatZinc.
+//
+//go:generate stringer -type=ParType
 type ParType int
 
 const (
@@ -50,6 +52,8 @@ type Variable struct {
 }
 
 // VarType represents the type of a variable in FlatZinc.
+//
+//go:generate stringer -type=VarType
 type VarType int
 
 const (
@@ -75,6 +79,8 @@ type Expr struct {
 }
 
 // SolveMethod represents the method to solve a FlatZinc model.
+//
+//go:generate stringer -type=SolveMethod
 type SolveMethod int
 
 const (
