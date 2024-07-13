@@ -51,7 +51,7 @@ func parsePredicateParam(p *parser) (PredParam, error) {
 	pp := PredParam{}
 
 	if p.lookAhead(0).Type == tok.Array {
-		a, err := parseArrayOf(p)
+		a, err := parseArrayOf(p, false)
 		if err != nil {
 			return PredParam{}, err
 		}

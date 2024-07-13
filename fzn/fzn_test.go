@@ -172,8 +172,21 @@ func TestParse_predicate(t *testing.T) {
 					Identifier: "foo",
 					Parameters: []PredParam{{
 						Identifier: "X",
-						Array:      &Array{1, 10},
+						Array:      &Array{IndexSet: &IndexSet{Start: 1, End: 10}},
 						VarType:    VarTypeFloatRange,
+					}},
+				},
+			},
+		},
+		{
+			input: "predicate foo(array [int] of var int: S);",
+			want: instruction{
+				Predicate: &Predicate{
+					Identifier: "foo",
+					Parameters: []PredParam{{
+						Identifier: "S",
+						Array:      &Array{},
+						VarType:    VarTypeIntRange,
 					}},
 				},
 			},
@@ -259,7 +272,7 @@ func TestParse_parameter(t *testing.T) {
 				ParamDeclaration: &ParamDeclaration{
 					Identifier: "foo",
 					Type:       ParTypeInt,
-					Array:      &Array{1, 2},
+					Array:      &Array{IndexSet: &IndexSet{Start: 1, End: 2}},
 					Literals: []Literal{
 						{Int: ptr.Of(42)},
 						{Int: ptr.Of(1337)},
@@ -383,7 +396,7 @@ func TestParse_variables(t *testing.T) {
 					Variable: Variable{
 						Type: VarTypeIntRange,
 					},
-					Array: &Array{1, 2},
+					Array: &Array{IndexSet: &IndexSet{Start: 1, End: 2}},
 				},
 			},
 		},
@@ -395,7 +408,7 @@ func TestParse_variables(t *testing.T) {
 					Variable: Variable{
 						Type: VarTypeIntRange,
 					},
-					Array: &Array{1, 2},
+					Array: &Array{IndexSet: &IndexSet{Start: 1, End: 2}},
 					Exprs: []BasicExpr{
 						{Identifier: "foo"},
 						{Identifier: "bar"},

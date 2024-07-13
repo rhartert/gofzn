@@ -19,7 +19,7 @@ var testCakesModel = Model{
 	ParamDeclarations: []ParamDeclaration{
 		{
 			Identifier: "X_INTRODUCED_2_",
-			Array:      &Array{Start: 1, End: 2},
+			Array:      &Array{IndexSet: &IndexSet{Start: 1, End: 2}},
 			Type:       ParTypeInt,
 			Literals: []Literal{
 				{Int: ptr.Of(250)},
@@ -28,7 +28,7 @@ var testCakesModel = Model{
 		},
 		{
 			Identifier: "X_INTRODUCED_6_",
-			Array:      &Array{Start: 1, End: 2},
+			Array:      &Array{IndexSet: &IndexSet{Start: 1, End: 2}},
 			Type:       ParTypeInt,
 			Literals: []Literal{
 				{Int: ptr.Of(75)},
@@ -37,7 +37,7 @@ var testCakesModel = Model{
 		},
 		{
 			Identifier: "X_INTRODUCED_8_",
-			Array:      &Array{Start: 1, End: 2},
+			Array:      &Array{IndexSet: &IndexSet{Start: 1, End: 2}},
 			Type:       ParTypeInt,
 			Literals: []Literal{
 				{Int: ptr.Of(100)},

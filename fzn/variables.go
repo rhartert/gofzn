@@ -21,7 +21,7 @@ func parseVarDeclaration(p *parser) (v *VarDeclaration, err error) {
 	v = &VarDeclaration{}
 
 	if p.lookAhead(0).Type == tok.Array {
-		v.Array, err = parseArrayOf(p)
+		v.Array, err = parseArrayOf(p, true)
 		if err != nil {
 			return nil, fmt.Errorf("error parsing variable array: %w", err)
 		}

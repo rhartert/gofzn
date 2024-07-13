@@ -142,7 +142,12 @@ type SetFloatLit struct {
 	Values [][]float64
 }
 
-// Array represents the index set of a FlatZinc array.
+// Array represents an array with an optional index set.
 type Array struct {
-	Start, End int // Start and end indexes (inclusive) of the array.
+	IndexSet *IndexSet
+}
+
+// IndexSet is a range of integer from Start to End (inclusive).
+type IndexSet struct {
+	Start, End int
 }

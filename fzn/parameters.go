@@ -40,7 +40,7 @@ func parseParamDeclaration(p *parser) (param *ParamDeclaration, err error) {
 	param = &ParamDeclaration{}
 
 	if p.lookAhead(0).Type == tok.Array {
-		param.Array, err = parseArrayOf(p)
+		param.Array, err = parseArrayOf(p, true)
 		if err != nil {
 			return nil, fmt.Errorf("error parsing parameter array: %w", err)
 		}
